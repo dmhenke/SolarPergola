@@ -1,5 +1,7 @@
 # Solar Pergola Structural Sizing & Regulatory Compliance Engine
 
+> **Live Web Report & Interactive Sizing Engine:** [https://dmhenke.github.io/SolarPergola/](https://dmhenke.github.io/SolarPergola/)
+
 Preliminary structural sizing and dimensional limit analysis for freestanding 4-post steel solar pergolas in **Salt Lake City, UT (ZIP 84108)** and surrounding jurisdictions under:
 * **2024 International Building Code (IBC)**
 * **ASCE 7-22** (Minimum Design Loads and Associated Criteria for Buildings and Other Structures)
