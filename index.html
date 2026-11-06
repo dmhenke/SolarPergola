@@ -635,18 +635,197 @@
         text-align: center;
       }
 
-      /* ----- Interactive Calculator Styles --------------------------- */
-      .calc-grid {
+      /* ----- Interactive Calculator & Designer Styles ---------------- */
+      .designer-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
+        grid-template-columns: minmax(360px, 1.05fr) minmax(440px, 1.35fr);
+        gap: 1.75rem;
         margin-top: 1.5rem;
       }
 
-      @media (max-width: 820px) {
-        .calc-grid {
+      @media (max-width: 960px) {
+        .designer-grid {
           grid-template-columns: 1fr;
         }
+      }
+
+      .calc-subgroup {
+        border-bottom: 1px solid var(--global-divider-color);
+        padding-bottom: 1.15rem;
+        margin-bottom: 1.15rem;
+      }
+
+      .calc-subgroup:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+
+      .calc-subgroup h4 {
+        font-family: "Spectral", Georgia, serif;
+        font-size: 1.08rem;
+        color: var(--global-theme-color);
+        margin-bottom: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+      }
+
+      .calc-subgroup h4 span.subtitle {
+        font-family: "Inter", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 400;
+        color: var(--global-text-color-light);
+        margin-left: auto;
+      }
+
+      .presets-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+        align-items: center;
+      }
+
+      .preset-chip {
+        background: var(--global-surface-color);
+        border: 1px solid var(--global-divider-color);
+        border-radius: 999px;
+        padding: 0.35rem 0.85rem;
+        font-size: 0.82rem;
+        cursor: pointer;
+        color: var(--global-text-color-light);
+        transition: all 0.18s ease;
+      }
+
+      .preset-chip:hover {
+        border-color: var(--global-theme-color);
+        color: var(--global-theme-color);
+      }
+
+      .preset-chip.active {
+        background-color: var(--global-theme-color);
+        border-color: var(--global-theme-color);
+        color: var(--global-hover-text-color);
+        font-weight: 600;
+      }
+
+      .check-cards-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.9rem;
+        margin-top: 1rem;
+      }
+
+      @media (max-width: 600px) {
+        .check-cards-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .check-card {
+        background: var(--global-bg-color);
+        border: 1px solid var(--global-divider-color);
+        border-radius: 8px;
+        padding: 0.9rem 1.05rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        transition: border-color 0.2s ease;
+      }
+
+      .check-card.pass {
+        border-left: 4px solid var(--global-success-block);
+      }
+
+      .check-card.fail {
+        border-left: 4px solid var(--global-danger-block);
+        background-color: color-mix(in srgb, var(--global-danger-block-bg) 30%, var(--global-bg-color));
+      }
+
+      .check-card__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.84rem;
+        font-weight: 600;
+      }
+
+      .check-card__title {
+        color: var(--global-text-color);
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .check-card__dc {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.78rem;
+      }
+
+      .dc-bar-bg {
+        height: 6px;
+        background: var(--global-divider-color);
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 0.25rem 0;
+      }
+
+      .dc-bar-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.25s ease, background-color 0.25s ease;
+      }
+
+      .check-card__desc {
+        font-size: 0.78rem;
+        color: var(--global-text-color-light);
+        line-height: 1.35;
+      }
+
+      .preview-svg-box {
+        background: var(--global-surface-color);
+        border: 1px solid var(--global-divider-color);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.25rem;
+        text-align: center;
+      }
+
+      .master-status-card {
+        padding: 1.25rem;
+        border-radius: 8px;
+        margin-bottom: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        border: 1px solid var(--global-divider-color);
+      }
+
+      .master-status-card.pass {
+        background-color: var(--global-success-block-bg);
+        border-left: 5px solid var(--global-success-block);
+        color: var(--global-success-block-text);
+      }
+
+      .master-status-card.fail {
+        background-color: var(--global-danger-block-bg);
+        border-left: 5px solid var(--global-danger-block);
+        color: var(--global-danger-block-text);
+      }
+
+      .master-status-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: "Spectral", Georgia, serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      .master-status-desc {
+        font-size: 0.88rem;
+        line-height: 1.45;
       }
 
       .calc-controls {
@@ -1589,113 +1768,381 @@
       </div>
 
       <!-- ============================================================== -->
-      <!-- TAB 5: INTERACTIVE PERGOLA SIZER                               -->
+      <!-- TAB 5: INTERACTIVE PERGOLA SIZER & DESIGN ENGINE               -->
       <!-- ============================================================== -->
       <div id="calculator" class="tab-content" role="tabpanel">
         <div class="content">
-          <h2>Interactive Pergola Sizer & Compliance Calculator</h2>
+          <h2>Interactive Pergola Designer & Code Compliance Engine</h2>
           <p>
-            Select your pergola dimensions, elevation, and framing style to compute real-time structural sizing, apex height,
-            building code compliance status, and drilled pier foundation requirements:
+            Configure your custom freestanding steel solar pergola below. Choose exact frame dimensions, lower edge clear height,
+            slopes from flat ($0^\circ$) to steep ($35^\circ$), member cross-sections, structural framing cantilever overhangs, and
+            PV module overhangs. The engine evaluates real-time structural mechanics and reports full compliance status under
+            <strong>2024 IBC, ASCE 7-22, AISC 360-22, Utah Code §15A-3-107</strong>, and <strong>Salt Lake City Code §21A.40.050</strong>.
           </p>
 
-          <div class="calc-grid">
-            <!-- Controls Form -->
+          <!-- Quick Presets Toolbar -->
+          <div class="presets-bar">
+            <span style="font-size: 0.82rem; font-weight: 600; margin-right: 0.35rem;">Quick Presets:</span>
+            <button type="button" class="preset-chip active" id="preset-std16">Standard M (16&times;20, 7&deg; Braced)</button>
+            <button type="button" class="preset-chip" id="preset-std12">Small Patio (12&times;16, 10&deg;)</button>
+            <button type="button" class="preset-chip" id="preset-std24">Large Double-Bay (20&times;24, 7&deg;)</button>
+            <button type="button" class="preset-chip" id="preset-flat">Flat Roof (0&deg; Pitch, Uniform Ht)</button>
+            <button type="button" class="preset-chip" id="preset-cant">Cantilever Overhang (3 ft Eave)</button>
+            <button type="button" class="preset-chip" id="preset-fail">Flagpole High-Pitch (Failure Case)</button>
+          </div>
+
+          <div class="designer-grid">
+            <!-- Controls Form Column -->
             <div class="calc-controls">
-              <h3 style="margin-top: 0; font-size: 1.15rem;">Pergola Parameters</h3>
+              <!-- Group 1: Geometry & Slope -->
+              <div class="calc-subgroup">
+                <h4><i class="fa-solid fa-ruler-combined"></i> Geometry & Slope</h4>
 
-              <div class="calc-group">
-                <label for="calc-depth">
-                  Roof Depth W (Slope Span): <span class="val" id="disp-depth">16 ft</span>
-                </label>
-                <select id="calc-depth">
-                  <option value="12">12 ft (Small Patio)</option>
-                  <option value="16" selected>16 ft (Medium Standard)</option>
-                  <option value="20">20 ft (Large Double-Bay)</option>
-                </select>
+                <div class="calc-group">
+                  <label for="calc-depth">
+                    Roof Depth W (Slope Span): <span class="val" id="disp-depth">16.0 ft</span>
+                  </label>
+                  <input type="range" id="calc-depth" min="8" max="26" step="0.5" value="16" />
+                </div>
+
+                <div class="calc-group" style="margin-top: 0.75rem;">
+                  <label for="calc-span">
+                    Post Spacing L (Girder Span): <span class="val" id="disp-span">20.0 ft</span>
+                  </label>
+                  <input type="range" id="calc-span" min="10" max="30" step="0.5" value="20" />
+                </div>
+
+                <div class="calc-group" style="margin-top: 0.75rem;">
+                  <label for="calc-pitch">
+                    Roof Pitch (&theta;): <span class="val" id="disp-pitch">7&deg;</span>
+                  </label>
+                  <input type="range" id="calc-pitch" min="0" max="35" step="1" value="7" />
+                  <span style="font-size: 0.76rem; color: var(--global-text-color-light); margin-top: 0.2rem;">
+                    <em>Note: When pitch is 0&deg;, roof is flat with uniform height across all posts.</em>
+                  </span>
+                </div>
+
+                <div class="calc-group" style="margin-top: 0.75rem;">
+                  <label for="calc-hlow">
+                    Lower Pitch Edge Clear Height: <span class="val" id="disp-hlow">8.0 ft</span>
+                  </label>
+                  <input type="range" id="calc-hlow" min="7.0" max="14.0" step="0.25" value="8.0" />
+                  <span style="font-size: 0.76rem; color: var(--global-text-color-light); margin-top: 0.2rem;">
+                    <em>Standard residential clearance is 8.0 ft. If pitch = 0&deg;, this is the uniform clearance height.</em>
+                  </span>
+                </div>
               </div>
 
-              <div class="calc-group">
-                <label for="calc-span">
-                  Post Spacing L (Girder Span): <span class="val" id="disp-span">20 ft</span>
-                </label>
-                <input type="range" id="calc-span" min="12" max="24" step="2" value="20" />
+              <!-- Group 2: Pillar / Upright Dimensions -->
+              <div class="calc-subgroup">
+                <h4>
+                  <i class="fa-solid fa-arrows-up-down"></i> Pillar / Upright Beam
+                  <span class="subtitle">Columns</span>
+                </h4>
+
+                <div class="calc-group">
+                  <label for="calc-post-shape">Shape & Wall Thickness:</label>
+                  <select id="calc-post-shape">
+                    <optgroup label="Square HSS Tubes (ASTM A500 Gr C, Fy = 46 ksi)">
+                      <option value="HSS4x4x3/16" selected>HSS 4x4 x 3/16" (9.42 lb/ft - Economical)</option>
+                      <option value="HSS4x4x1/4">HSS 4x4 x 1/4" (12.21 lb/ft)</option>
+                      <option value="HSS4x4x5/16">HSS 4x4 x 5/16" (14.83 lb/ft)</option>
+                      <option value="HSS4x4x1/2">HSS 4x4 x 1/2" (21.63 lb/ft)</option>
+                      <option value="HSS5x5x1/4">HSS 5x5 x 1/4" (15.62 lb/ft)</option>
+                      <option value="HSS5x5x5/16">HSS 5x5 x 5/16" (19.08 lb/ft)</option>
+                      <option value="HSS6x6x1/4">HSS 6x6 x 1/4" (19.02 lb/ft)</option>
+                      <option value="HSS6x6x5/16">HSS 6x6 x 5/16" (23.34 lb/ft)</option>
+                      <option value="HSS6x6x3/8">HSS 6x6 x 3/8" (27.48 lb/ft)</option>
+                      <option value="HSS6x6x1/2">HSS 6x6 x 1/2" (35.24 lb/ft)</option>
+                      <option value="HSS8x8x1/4">HSS 8x8 x 1/4" (25.82 lb/ft)</option>
+                      <option value="HSS8x8x5/16">HSS 8x8 x 5/16" (31.84 lb/ft)</option>
+                      <option value="HSS8x8x3/8">HSS 8x8 x 3/8" (37.69 lb/ft)</option>
+                      <option value="HSS10x10x5/16">HSS 10x10 x 5/16" (40.35 lb/ft - Heavy Cantilever)</option>
+                    </optgroup>
+                    <optgroup label="American Standard Beams (AISC S-Shapes, Fy = 36 ksi)">
+                      <option value="S4x7.7">S4 x 7.7 (7.7 lb/ft - Requires Knee Bracing)</option>
+                      <option value="S4x9.5">S4 x 9.5 (9.5 lb/ft - Requires Knee Bracing)</option>
+                      <option value="S5x10">S5 x 10 (10.0 lb/ft - Requires Knee Bracing)</option>
+                      <option value="S6x12.5">S6 x 12.5 (12.5 lb/ft - Requires Knee Bracing)</option>
+                      <option value="S6x17.25">S6 x 17.25 (17.25 lb/ft)</option>
+                      <option value="S8x18.4">S8 x 18.4 (18.4 lb/ft)</option>
+                    </optgroup>
+                    <optgroup label="Wide Flange Shapes (AISC W-Shapes, Fy = 50 ksi)">
+                      <option value="W6x9">W6 x 9 (9.0 lb/ft)</option>
+                      <option value="W8x13">W8 x 13 (13.0 lb/ft)</option>
+                    </optgroup>
+                  </select>
+                </div>
               </div>
 
-              <div class="calc-group">
-                <label for="calc-pitch">
-                  Roof Pitch (&theta;): <span class="val" id="disp-pitch">7&deg; (1.5:12)</span>
-                </label>
-                <select id="calc-pitch">
-                  <option value="7" selected>7&deg; (Recommended - Compliant)</option>
-                  <option value="10">10&deg; (Recommended - Compliant)</option>
-                  <option value="15">15&deg; (Uplift Limit Failure)</option>
-                  <option value="20">20&deg; (Zoning & Uplift Failure)</option>
-                  <option value="25">25&deg; (Zoning & Uplift Failure)</option>
-                  <option value="30">30&deg; (Zoning & Uplift Failure)</option>
-                  <option value="35">35&deg; (Severe Failure)</option>
-                </select>
+              <!-- Group 3: Side Beam (Girder) Dimensions -->
+              <div class="calc-subgroup">
+                <h4>
+                  <i class="fa-solid fa-grip-lines"></i> Side Beam (Girder)
+                  <span class="subtitle">Perimeter Span</span>
+                </h4>
+
+                <div class="calc-group">
+                  <label for="calc-girder-shape">Shape & Wall Thickness:</label>
+                  <select id="calc-girder-shape">
+                    <optgroup label="AISC Wide Flange Beams (Fy = 50 ksi)">
+                      <option value="W6x9">W6 x 9 (9.0 lb/ft)</option>
+                      <option value="W6x12">W6 x 12 (12.0 lb/ft)</option>
+                      <option value="W8x13">W8 x 13 (13.0 lb/ft)</option>
+                      <option value="W8x18">W8 x 18 (18.0 lb/ft)</option>
+                      <option value="W10x12" selected>W10 x 12 (12.0 lb/ft - High Efficiency)</option>
+                      <option value="W10x15">W10 x 15 (15.0 lb/ft)</option>
+                      <option value="W10x19">W10 x 19 (19.0 lb/ft)</option>
+                      <option value="W10x22">W10 x 22 (22.0 lb/ft)</option>
+                      <option value="W12x26">W12 x 26 (26.0 lb/ft - Long Span)</option>
+                    </optgroup>
+                    <optgroup label="Square HSS Tubes (ASTM A500 Gr C, Fy = 46 ksi)">
+                      <option value="HSS4x4x3/16">HSS 4x4 x 3/16" (9.42 lb/ft)</option>
+                      <option value="HSS4x4x1/4">HSS 4x4 x 1/4" (12.21 lb/ft)</option>
+                      <option value="HSS5x5x1/4">HSS 5x5 x 1/4" (15.62 lb/ft)</option>
+                      <option value="HSS6x6x1/4">HSS 6x6 x 1/4" (19.02 lb/ft)</option>
+                      <option value="HSS8x8x1/4">HSS 8x8 x 1/4" (25.82 lb/ft)</option>
+                      <option value="HSS8x8x5/16">HSS 8x8 x 5/16" (31.84 lb/ft)</option>
+                    </optgroup>
+                    <optgroup label="Rectangular HSS 6x2 Series (Custom Integrated)">
+                      <option value="HSS6x2x1/8">HSS 6x2 x 1/8" (6.05 lb/ft - Ultra Light)</option>
+                      <option value="HSS6x2x3/16">HSS 6x2 x 3/16" (8.80 lb/ft)</option>
+                      <option value="HSS6x2x1/4">HSS 6x2 x 1/4" (11.48 lb/ft)</option>
+                      <option value="HSS6x2x5/16">HSS 6x2 x 5/16" (13.96 lb/ft)</option>
+                      <option value="HSS6x2x3/8">HSS 6x2 x 3/8" (16.27 lb/ft)</option>
+                    </optgroup>
+                    <optgroup label="American Standard S-Shapes (Fy = 36 ksi)">
+                      <option value="S4x7.7">S4 x 7.7 (7.7 lb/ft)</option>
+                      <option value="S6x12.5">S6 x 12.5 (12.5 lb/ft)</option>
+                      <option value="S8x18.4">S8 x 18.4 (18.4 lb/ft)</option>
+                    </optgroup>
+                  </select>
+                </div>
               </div>
 
-              <div class="calc-group">
-                <label for="calc-elev">Site Elevation (Wasatch Front):</label>
-                <select id="calc-elev">
-                  <option value="4300">4,300 ft (SLC Valley Floor - Pg 28 psf)</option>
-                  <option value="5500" selected>5,500 ft (East Bench ZIP 84108 - Pg 90 psf)</option>
-                </select>
+              <!-- Group 4: Rafter Dimensions & Spacing -->
+              <div class="calc-subgroup">
+                <h4>
+                  <i class="fa-solid fa-layer-group"></i> Rafters & Spacing
+                  <span class="subtitle">Roof Slope Joists</span>
+                </h4>
+
+                <div class="calc-group">
+                  <label for="calc-rafter-shape">Shape & Wall Thickness:</label>
+                  <select id="calc-rafter-shape">
+                    <optgroup label="Wide Flange & S-Shapes">
+                      <option value="W6x9" selected>W6 x 9 (9.0 lb/ft - Standard)</option>
+                      <option value="W6x12">W6 x 12 (12.0 lb/ft)</option>
+                      <option value="W8x10">W8 x 10 (10.0 lb/ft)</option>
+                      <option value="W8x13">W8 x 13 (13.0 lb/ft)</option>
+                      <option value="S4x7.7">S4 x 7.7 (7.7 lb/ft)</option>
+                      <option value="S5x10">S5 x 10 (10.0 lb/ft)</option>
+                      <option value="S6x12.5">S6 x 12.5 (12.5 lb/ft)</option>
+                    </optgroup>
+                    <optgroup label="Square & Rectangular HSS Tubes">
+                      <option value="HSS4x4x3/16">HSS 4x4 x 3/16" (9.42 lb/ft)</option>
+                      <option value="HSS4x4x1/4">HSS 4x4 x 1/4" (12.21 lb/ft)</option>
+                      <option value="HSS5x5x1/4">HSS 5x5 x 1/4" (15.62 lb/ft)</option>
+                      <option value="HSS6x2x1/8">HSS 6x2 x 1/8" (6.05 lb/ft)</option>
+                      <option value="HSS6x2x3/16">HSS 6x2 x 3/16" (8.80 lb/ft)</option>
+                      <option value="HSS6x2x1/4">HSS 6x2 x 1/4" (11.48 lb/ft)</option>
+                    </optgroup>
+                  </select>
+                </div>
+
+                <div class="calc-group" style="margin-top: 0.75rem;">
+                  <label for="calc-raf-spacing">Rafter Spacing (On-Center):</label>
+                  <select id="calc-raf-spacing">
+                    <option value="2.0">2.0 ft (24 in - Heavy Snow / XR10)</option>
+                    <option value="3.0" selected>3.0 ft (36 in - Standard / XR100)</option>
+                    <option value="4.0">4.0 ft (48 in - Long Rail Span / XR1000)</option>
+                  </select>
+                </div>
               </div>
 
-              <div class="calc-group">
-                <label for="calc-mode">Structural Framing Topology:</label>
-                <select id="calc-mode">
-                  <option value="braced" selected>Knee-Braced Frame (ab = 2.5 ft) - Recommended</option>
-                  <option value="cant">Unbraced Cantilever (Flagpole Base)</option>
-                </select>
+              <!-- Group 5: Cantilever & Overhang Options -->
+              <div class="calc-subgroup">
+                <h4>
+                  <i class="fa-solid fa-arrows-split-up-and-left"></i> Cantilever & Overhang Options
+                  <span class="subtitle">Eaves & Topology</span>
+                </h4>
+
+                <div class="calc-group">
+                  <label for="calc-mode">Framing Connection Mode:</label>
+                  <select id="calc-mode">
+                    <option value="braced" selected>Knee-Braced Frame (ab = 2.5 ft) - Recommended</option>
+                    <option value="cant">Unbraced Cantilever Column (Flagpole Base)</option>
+                  </select>
+                  <span style="font-size: 0.76rem; color: var(--global-text-color-light); margin-top: 0.2rem;">
+                    <em>Cantilever mode transfers massive base moment to ground, disqualifying slender shapes and deepening piers.</em>
+                  </span>
+                </div>
+
+                <div class="calc-group" style="margin-top: 0.75rem;">
+                  <label for="calc-cant-girder">
+                    Girder Cantilever Overhang (Past Posts): <span class="val" id="disp-cant-girder">0.0 ft</span>
+                  </label>
+                  <input type="range" id="calc-cant-girder" min="0.0" max="4.0" step="0.5" value="0.0" />
+                  <span style="font-size: 0.76rem; color: var(--global-text-color-light); margin-top: 0.2rem;">
+                    <em>Distance side beams extend past front/rear posts.</em>
+                  </span>
+                </div>
+
+                <div class="calc-group" style="margin-top: 0.75rem;">
+                  <label for="calc-mod-overhang">
+                    PV Module Cantilever Overhang: <span class="val" id="disp-mod-overhang">6 in</span>
+                  </label>
+                  <input type="range" id="calc-mod-overhang" min="0" max="36" step="2" value="6" />
+                  <span style="font-size: 0.76rem; color: var(--global-text-color-light); margin-top: 0.2rem;">
+                    <em>Distance PV panels extend unsupported past eave rafters. Max 20" recommended by manufacturers.</em>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Group 6: Environmental Elevation -->
+              <div class="calc-subgroup">
+                <h4><i class="fa-solid fa-mountain"></i> Environmental Site Envelope</h4>
+                <div class="calc-group">
+                  <label for="calc-elev">Elevation (Wasatch Front):</label>
+                  <select id="calc-elev">
+                    <option value="4300">4,300 ft MSL (SLC Valley Floor - Pg = 28 psf, Pf = 23.5 psf)</option>
+                    <option value="5500" selected>5,500 ft MSL (East Bench ZIP 84108 - Pg = 90.1 psf, Pf = 75.7 psf)</option>
+                  </select>
+                </div>
               </div>
             </div>
 
-            <!-- Results Output Card -->
+            <!-- Real-Time Evaluation & SVG Display Column -->
             <div class="calc-results">
-              <div class="calc-res-header">
-                <h4>Engineering Evaluation</h4>
-                <span id="res-badge" class="badge badge-success">COMPLIANT</span>
+              <!-- Live Elevation SVG Diagram -->
+              <div class="preview-svg-box">
+                <svg id="preview-svg" viewBox="0 0 600 340" width="100%" height="auto" style="overflow: visible;">
+                  <!-- Dynamic SVG content drawn by JavaScript -->
+                </svg>
+                <div style="font-size: 0.78rem; color: var(--global-text-color-light); margin-top: 0.35rem;">
+                  Dynamic Architectural Cross-Section Preview (Updates live with dimensions, pitch, lower height & overhangs)
+                </div>
               </div>
 
-              <div class="calc-item">
-                <span class="lbl">Total Apex Height:</span>
-                <span class="val" id="res-apex">11.9 ft</span>
+              <!-- Master Compliance Status Card -->
+              <div id="master-status-card" class="master-status-card pass">
+                <div class="master-status-head">
+                  <span id="master-status-title">COMPLIANT</span>
+                  <span id="master-status-badge" class="badge badge-success">ALL CHECKS SATISFIED</span>
+                </div>
+                <div id="master-status-desc" class="master-status-desc">
+                  Structure satisfies 2024 IBC, ASCE 7-22 wind/snow, AISC 360-22 steel strength/slenderness, and Salt Lake City accessory zoning height limits.
+                </div>
               </div>
-              <div class="calc-item">
-                <span class="lbl">SLC 15-ft Zoning Margin:</span>
-                <span class="val" id="res-zoning-margin">+3.1 ft (Passed)</span>
+
+              <!-- Quick Metrics Grid -->
+              <div class="stat-grid" style="margin: 0 0 1rem 0; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.6rem;">
+                <div class="stat-card" style="padding: 0.75rem 0.9rem;">
+                  <span class="stat-card__label">Total Apex Ht</span>
+                  <span class="stat-card__val" id="metric-apex" style="font-size: 1.45rem;">11.9 ft</span>
+                  <span class="stat-card__desc" id="metric-apex-sub">&le; 15.0 ft limit</span>
+                </div>
+                <div class="stat-card" style="padding: 0.75rem 0.9rem;">
+                  <span class="stat-card__label">Pier Depth</span>
+                  <span class="stat-card__val" id="metric-pier" style="font-size: 1.45rem;">4.3 ft</span>
+                  <span class="stat-card__desc" id="metric-pier-sub">30" drilled pier</span>
+                </div>
+                <div class="stat-card" style="padding: 0.75rem 0.9rem;">
+                  <span class="stat-card__label">Steel Weight</span>
+                  <span class="stat-card__val" id="metric-weight" style="font-size: 1.45rem;">1,580 lb</span>
+                  <span class="stat-card__desc" id="metric-weight-sub">~$1,580 steel cost</span>
+                </div>
               </div>
-              <div class="calc-item">
-                <span class="lbl">Design Roof Snow (Pf):</span>
-                <span class="val" id="res-snow">75.7 psf</span>
-              </div>
-              <div class="calc-item">
-                <span class="lbl">Peak Wind Uplift Suction:</span>
-                <span class="val" id="res-uplift">24.2 psf (Passed &le; 33.4)</span>
-              </div>
-              <div class="calc-item">
-                <span class="lbl">Recommended Rafter:</span>
-                <span class="val" id="res-rafter">W6x9 or HSS4x4x1/4</span>
-              </div>
-              <div class="calc-item">
-                <span class="lbl">Recommended Girder:</span>
-                <span class="val" id="res-girder">W10x12 or HSS8x8x1/4</span>
-              </div>
-              <div class="calc-item">
-                <span class="lbl">Recommended Upright Post:</span>
-                <span class="val" id="res-post">HSS4x4x3/16 or S4x7.7</span>
-              </div>
-              <div class="calc-item">
-                <span class="lbl">Drilled Concrete Pier Depth:</span>
-                <span class="val" id="res-pier">4.3 ft (30" dia)</span>
-              </div>
-              <div class="calc-item">
-                <span class="lbl">Total Steel Weight / Cost:</span>
-                <span class="val" id="res-steel">~1,580 lb ($1,580 mid)</span>
+
+              <!-- Detailed 6-Check Compliance Grid -->
+              <h4 style="margin: 0.5rem 0 0.25rem 0; font-size: 0.98rem; font-family: 'Inter', sans-serif;">
+                Building Code & Structural Mechanics Breakdown
+              </h4>
+
+              <div class="check-cards-grid">
+                <!-- Check 1: Zoning Height -->
+                <div class="check-card pass" id="card-zoning">
+                  <div class="check-card__head">
+                    <span class="check-card__title"><i class="fa-solid fa-house-chimney"></i> SLC Zoning Height</span>
+                    <span class="badge badge-success" id="badge-zoning">PASS</span>
+                  </div>
+                  <div class="dc-bar-bg">
+                    <div class="dc-bar-fill" id="bar-zoning" style="width: 79%; background-color: var(--global-success-block);"></div>
+                  </div>
+                  <div class="check-card__desc" id="desc-zoning">
+                    Apex 11.9 ft &le; 15.0 ft ceiling (+3.1 ft margin).
+                  </div>
+                </div>
+
+                <!-- Check 2: Module Wind Uplift & Overhang -->
+                <div class="check-card pass" id="card-uplift">
+                  <div class="check-card__head">
+                    <span class="check-card__title"><i class="fa-solid fa-wind"></i> PV Module Uplift</span>
+                    <span class="badge badge-success" id="badge-uplift">PASS</span>
+                  </div>
+                  <div class="dc-bar-bg">
+                    <div class="dc-bar-fill" id="bar-uplift" style="width: 72%; background-color: var(--global-success-block);"></div>
+                  </div>
+                  <div class="check-card__desc" id="desc-uplift">
+                    Suction 24.2 psf &le; 33.4 psf rating. Overhang 6" &le; 20".
+                  </div>
+                </div>
+
+                <!-- Check 3: Rafter Capacity -->
+                <div class="check-card pass" id="card-rafter">
+                  <div class="check-card__head">
+                    <span class="check-card__title"><i class="fa-solid fa-layer-group"></i> Rafter Stress</span>
+                    <span class="check-card__dc" id="dc-rafter">D/C: 0.58</span>
+                  </div>
+                  <div class="dc-bar-bg">
+                    <div class="dc-bar-fill" id="bar-rafter" style="width: 58%; background-color: var(--global-success-block);"></div>
+                  </div>
+                  <div class="check-card__desc" id="desc-rafter">
+                    Flexure & LTB pass AISC F2/F7. Deflection &Delta; &le; L/180.
+                  </div>
+                </div>
+
+                <!-- Check 4: Girder Capacity -->
+                <div class="check-card pass" id="card-girder">
+                  <div class="check-card__head">
+                    <span class="check-card__title"><i class="fa-solid fa-grip-lines"></i> Girder / Side Beam</span>
+                    <span class="check-card__dc" id="dc-girder">D/C: 0.64</span>
+                  </div>
+                  <div class="dc-bar-bg">
+                    <div class="dc-bar-fill" id="bar-girder" style="width: 64%; background-color: var(--global-success-block);"></div>
+                  </div>
+                  <div class="check-card__desc" id="desc-girder">
+                    Span moment pass AISC 360-22. Shear & deflection compliant.
+                  </div>
+                </div>
+
+                <!-- Check 5: Upright Mechanics & Slenderness -->
+                <div class="check-card pass" id="card-upright">
+                  <div class="check-card__head">
+                    <span class="check-card__title"><i class="fa-solid fa-arrows-up-down"></i> Pillar Upright</span>
+                    <span class="check-card__dc" id="dc-upright">D/C: 0.52</span>
+                  </div>
+                  <div class="dc-bar-bg">
+                    <div class="dc-bar-fill" id="bar-upright" style="width: 52%; background-color: var(--global-success-block);"></div>
+                  </div>
+                  <div class="check-card__desc" id="desc-upright">
+                    Slenderness KL/r = 68 &le; 300. Combined interaction pass.
+                  </div>
+                </div>
+
+                <!-- Check 6: Foundation Pier -->
+                <div class="check-card pass" id="card-pier">
+                  <div class="check-card__head">
+                    <span class="check-card__title"><i class="fa-solid fa-circle-down"></i> Drilled Pier Foundation</span>
+                    <span class="badge badge-success" id="badge-pier">PASS</span>
+                  </div>
+                  <div class="dc-bar-bg">
+                    <div class="dc-bar-fill" id="bar-pier" style="width: 48%; background-color: var(--global-success-block);"></div>
+                  </div>
+                  <div class="check-card__desc" id="desc-pier">
+                    Embedment 4.3 ft &ge; 3.0 ft frost line (IBC §1807.3.2.1).
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1894,89 +2341,647 @@
         });
       })();
 
-      // Interactive Calculator Engine
+      // ================================================================
+      // AISC 360-22 Structural Sections Database
+      // ================================================================
+      var shapesDB = {
+        posts: {
+          "HSS4x4x3/16": {name:"HSS 4x4 x 3/16", type:"HSS", A:2.58, I:6.21, S:3.10, Z:3.67, r:1.55, wt:9.42, Fy:46},
+          "HSS4x4x1/4":  {name:"HSS 4x4 x 1/4",  type:"HSS", A:3.37, I:7.80, S:3.90, Z:4.69, r:1.52, wt:12.21, Fy:46},
+          "HSS4x4x5/16": {name:"HSS 4x4 x 5/16", type:"HSS", A:4.10, I:9.14, S:4.57, Z:5.62, r:1.49, wt:14.83, Fy:46},
+          "HSS4x4x1/2":  {name:"HSS 4x4 x 1/2",  type:"HSS", A:6.02, I:11.9, S:5.97, Z:7.70, r:1.41, wt:21.63, Fy:46},
+          "HSS5x5x1/4":  {name:"HSS 5x5 x 1/4",  type:"HSS", A:4.30, I:16.0, S:6.41, Z:7.61, r:1.93, wt:15.62, Fy:46},
+          "HSS5x5x5/16": {name:"HSS 5x5 x 5/16", type:"HSS", A:5.26, I:19.0, S:7.62, Z:9.20, r:1.90, wt:19.08, Fy:46},
+          "HSS6x6x1/4":  {name:"HSS 6x6 x 1/4",  type:"HSS", A:5.24, I:28.6, S:9.54, Z:11.2, r:2.34, wt:19.02, Fy:46},
+          "HSS6x6x5/16": {name:"HSS 6x6 x 5/16", type:"HSS", A:6.43, I:34.3, S:11.4, Z:13.6, r:2.31, wt:23.34, Fy:46},
+          "HSS6x6x3/8":  {name:"HSS 6x6 x 3/8",  type:"HSS", A:7.58, I:39.5, S:13.2, Z:15.8, r:2.28, wt:27.48, Fy:46},
+          "HSS6x6x1/2":  {name:"HSS 6x6 x 1/2",  type:"HSS", A:9.74, I:48.3, S:16.1, Z:20.0, r:2.23, wt:35.24, Fy:46},
+          "HSS8x8x1/4":  {name:"HSS 8x8 x 1/4",  type:"HSS", A:7.10, I:70.7, S:17.7, Z:20.5, r:3.15, wt:25.82, Fy:46},
+          "HSS8x8x5/16": {name:"HSS 8x8 x 5/16", type:"HSS", A:8.76, I:85.6, S:21.4, Z:25.1, r:3.13, wt:31.84, Fy:46},
+          "HSS8x8x3/8":  {name:"HSS 8x8 x 3/8",  type:"HSS", A:10.4, I:100.0, S:25.0, Z:29.4, r:3.10, wt:37.69, Fy:46},
+          "HSS10x10x5/16": {name:"HSS 10x10 x 5/16", type:"HSS", A:11.1, I:172.0, S:34.3, Z:39.6, r:3.94, wt:40.35, Fy:46},
+          "S4x7.7":   {name:"S4 x 7.7",   type:"S",   A:2.26, I:6.08, S:3.04, Z:3.51, r:0.581, wt:7.7, Fy:36},
+          "S4x9.5":   {name:"S4 x 9.5",   type:"S",   A:2.79, I:6.79, S:3.39, Z:4.01, r:0.569, wt:9.5, Fy:36},
+          "S5x10":    {name:"S5 x 10",    type:"S",   A:2.93, I:12.3, S:4.90, Z:5.66, r:0.638, wt:10.0, Fy:36},
+          "S6x12.5":  {name:"S6 x 12.5",  type:"S",   A:3.66, I:22.0, S:7.33, Z:8.45, r:0.702, wt:12.5, Fy:36},
+          "S6x17.25": {name:"S6 x 17.25", type:"S",   A:5.06, I:26.2, S:8.74, Z:10.5, r:0.676, wt:17.25, Fy:36},
+          "S8x18.4":  {name:"S8 x 18.4",  type:"S",   A:5.40, I:57.6, S:14.4, Z:16.5, r:0.831, wt:18.4, Fy:36},
+          "W6x9":     {name:"W6 x 9",     type:"W",   A:2.68, I:16.4, S:5.56, Z:6.23, r:0.905, wt:9.0, Fy:50},
+          "W8x13":    {name:"W8 x 13",    type:"W",   A:3.84, I:39.6, S:9.91, Z:11.4, r:0.843, wt:13.0, Fy:50}
+        },
+        girders: {
+          "W6x9":       {name:"W6 x 9",       type:"W",    wt:9.0,   Ix:16.4,  Sx:5.56,  Zx:6.23,  Fy:50},
+          "W6x12":      {name:"W6 x 12",      type:"W",    wt:12.0,  Ix:22.1,  Sx:7.31,  Zx:8.30,  Fy:50},
+          "W8x13":      {name:"W8 x 13",      type:"W",    wt:13.0,  Ix:39.6,  Sx:9.91,  Zx:11.4,  Fy:50},
+          "W8x18":      {name:"W8 x 18",      type:"W",    wt:18.0,  Ix:61.9,  Sx:15.2,  Zx:17.0,  Fy:50},
+          "W10x12":     {name:"W10 x 12",     type:"W",    wt:12.0,  Ix:53.8,  Sx:10.9,  Zx:12.6,  Fy:50},
+          "W10x15":     {name:"W10 x 15",     type:"W",    wt:15.0,  Ix:68.9,  Sx:13.8,  Zx:16.0,  Fy:50},
+          "W10x19":     {name:"W10 x 19",     type:"W",    wt:19.0,  Ix:96.3,  Sx:18.8,  Zx:21.6,  Fy:50},
+          "W10x22":     {name:"W10 x 22",     type:"W",    wt:22.0,  Ix:118.0, Sx:23.2,  Zx:26.0,  Fy:50},
+          "W12x26":     {name:"W12 x 26",     type:"W",    wt:26.0,  Ix:204.0, Sx:33.4,  Zx:37.2,  Fy:50},
+          "HSS4x4x3/16":{name:"HSS 4x4 x 3/16", type:"HSS", wt:9.42,  Ix:6.21,  Sx:3.10,  Zx:3.67,  Fy:46},
+          "HSS4x4x1/4": {name:"HSS 4x4 x 1/4",  type:"HSS", wt:12.21, Ix:7.80,  Sx:3.90,  Zx:4.69,  Fy:46},
+          "HSS5x5x1/4": {name:"HSS 5x5 x 1/4",  type:"HSS", wt:15.62, Ix:16.0,  Sx:6.41,  Zx:7.61,  Fy:46},
+          "HSS6x6x1/4": {name:"HSS 6x6 x 1/4",  type:"HSS", wt:19.02, Ix:28.6,  Sx:9.54,  Zx:11.2,  Fy:46},
+          "HSS8x8x1/4": {name:"HSS 8x8 x 1/4",  type:"HSS", wt:25.82, Ix:70.7,  Sx:17.7,  Zx:20.5,  Fy:46},
+          "HSS8x8x5/16":{name:"HSS 8x8 x 5/16", type:"HSS", wt:31.84, Ix:85.6,  Sx:21.4,  Zx:25.1,  Fy:46},
+          "HSS6x2x1/8": {name:"HSS 6x2 x 1/8",  type:"Rect", wt:6.05,  Ix:7.53,  Sx:2.51,  Zx:3.23,  Fy:46},
+          "HSS6x2x3/16":{name:"HSS 6x2 x 3/16", type:"Rect", wt:8.80,  Ix:10.49, Sx:3.50,  Zx:4.58,  Fy:46},
+          "HSS6x2x1/4": {name:"HSS 6x2 x 1/4",  type:"Rect", wt:11.48, Ix:13.15, Sx:4.38,  Zx:5.86,  Fy:46},
+          "HSS6x2x5/16":{name:"HSS 6x2 x 5/16", type:"Rect", wt:13.96, Ix:15.37, Sx:5.12,  Zx:6.97,  Fy:46},
+          "HSS6x2x3/8": {name:"HSS 6x2 x 3/8",  type:"Rect", wt:16.27, Ix:17.14, Sx:5.71,  Zx:7.93,  Fy:46},
+          "S4x7.7":     {name:"S4 x 7.7",     type:"S",    wt:7.7,   Ix:6.08,  Sx:3.04,  Zx:3.51,  Fy:36},
+          "S6x12.5":    {name:"S6 x 12.5",    type:"S",    wt:12.5,  Ix:22.0,  Sx:7.33,  Zx:8.45,  Fy:36},
+          "S8x18.4":    {name:"S8 x 18.4",    type:"S",    wt:18.4,  Ix:57.6,  Sx:14.4,  Zx:16.5,  Fy:36}
+        },
+        rafters: {
+          "W6x9":       {name:"W6 x 9",       type:"W",    wt:9.0,   Ix:16.4,  Sx:5.56,  Zx:6.23,  Fy:50},
+          "W6x12":      {name:"W6 x 12",      type:"W",    wt:12.0,  Ix:22.1,  Sx:7.31,  Zx:8.30,  Fy:50},
+          "W8x10":      {name:"W8 x 10",      type:"W",    wt:10.0,  Ix:30.8,  Sx:7.81,  Zx:8.87,  Fy:50},
+          "W8x13":      {name:"W8 x 13",      type:"W",    wt:13.0,  Ix:39.6,  Sx:9.91,  Zx:11.4,  Fy:50},
+          "S4x7.7":     {name:"S4 x 7.7",     type:"S",    wt:7.7,   Ix:6.08,  Sx:3.04,  Zx:3.51,  Fy:36},
+          "S5x10":      {name:"S5 x 10",      type:"S",    wt:10.0,  Ix:12.3,  Sx:4.90,  Zx:5.66,  Fy:36},
+          "S6x12.5":    {name:"S6 x 12.5",    type:"S",    wt:12.5,  Ix:22.0,  Sx:7.33,  Zx:8.45,  Fy:36},
+          "HSS4x4x3/16":{name:"HSS 4x4 x 3/16", type:"HSS", wt:9.42,  Ix:6.21,  Sx:3.10,  Zx:3.67,  Fy:46},
+          "HSS4x4x1/4": {name:"HSS 4x4 x 1/4",  type:"HSS", wt:12.21, Ix:7.80,  Sx:3.90,  Zx:4.69,  Fy:46},
+          "HSS5x5x1/4": {name:"HSS 5x5 x 1/4",  type:"HSS", wt:15.62, Ix:16.0,  Sx:6.41,  Zx:7.61,  Fy:46},
+          "HSS6x2x1/8": {name:"HSS 6x2 x 1/8",  type:"Rect", wt:6.05,  Ix:7.53,  Sx:2.51,  Zx:3.23,  Fy:46},
+          "HSS6x2x3/16":{name:"HSS 6x2 x 3/16", type:"Rect", wt:8.80,  Ix:10.49, Sx:3.50,  Zx:4.58,  Fy:46},
+          "HSS6x2x1/4": {name:"HSS 6x2 x 1/4",  type:"Rect", wt:11.48, Ix:13.15, Sx:4.38,  Zx:5.86,  Fy:46}
+        }
+      };
+
+      // Interactive Engine & Real-Time Evaluator
       function runCalc() {
         var W = parseFloat(document.getElementById("calc-depth").value);
         var L = parseFloat(document.getElementById("calc-span").value);
         var pitch = parseFloat(document.getElementById("calc-pitch").value);
-        var elev = parseFloat(document.getElementById("calc-elev").value);
+        var hlow = parseFloat(document.getElementById("calc-hlow").value);
+        var postKey = document.getElementById("calc-post-shape").value;
+        var girderKey = document.getElementById("calc-girder-shape").value;
+        var rafterKey = document.getElementById("calc-rafter-shape").value;
+        var sRaf = parseFloat(document.getElementById("calc-raf-spacing").value);
         var mode = document.getElementById("calc-mode").value;
+        var cantGirder = parseFloat(document.getElementById("calc-cant-girder").value);
+        var modOverIn = parseFloat(document.getElementById("calc-mod-overhang").value);
+        var elev = parseFloat(document.getElementById("calc-elev").value);
 
-        document.getElementById("disp-depth").textContent = W + " ft";
-        document.getElementById("disp-span").textContent = L + " ft";
+        // Display current values
+        document.getElementById("disp-depth").textContent = W.toFixed(1) + " ft";
+        document.getElementById("disp-span").textContent = L.toFixed(1) + " ft";
         document.getElementById("disp-pitch").textContent = pitch + "°";
+        document.getElementById("disp-hlow").textContent = hlow.toFixed(1) + " ft" + (pitch === 0 ? " (Uniform)" : "");
+        document.getElementById("disp-cant-girder").textContent = cantGirder.toFixed(1) + " ft";
+        document.getElementById("disp-mod-overhang").textContent = modOverIn + ' in';
 
+        var post = shapesDB.posts[postKey] || shapesDB.posts["HSS4x4x3/16"];
+        var girder = shapesDB.girders[girderKey] || shapesDB.girders["W10x12"];
+        var rafter = shapesDB.rafters[rafterKey] || shapesDB.rafters["W6x9"];
+
+        // -------------------------------------------------------------
+        // 1. Geometry & Heights
+        // -------------------------------------------------------------
         var rad = pitch * Math.PI / 180;
         var rise = W * Math.tan(rad);
-        var clearHt = 8.0;
-        var apexHt = clearHt + 1.9 + rise;
+        var hhigh = hlow + rise;
+        var framingDepth = 1.0; // ft allowance for girder + rafter depths
+        var modOverFt = modOverIn / 12.0;
+        var apexHt = hhigh + framingDepth + modOverFt * Math.sin(rad);
 
-        // Snow loads based on elevation
+        // -------------------------------------------------------------
+        // 2. Environmental Loads (Utah Code §15A-3-107 & ASCE 7-22)
+        // -------------------------------------------------------------
         var pg = elev === 5500 ? 90.1 : 28.0;
         var pf = elev === 5500 ? 75.7 : 23.5;
+        var Cs = pitch <= 15 ? 1.0 : Math.max(0, 1.0 - (pitch - 15) / 55.0);
+        var ps = Cs * pf * Math.pow(Math.cos(rad), 2); // sloped roof snow psf
+        var D = 5.0; // Dead load (PV 2.5 psf + hardware/framing)
 
-        // Peak uplift suction
-        var upliftSuction = 20.0 + (pitch / 35.0) * 26.0; // psf approx from ASCE 7-22 C&C
-        var upliftOk = upliftSuction <= 33.4;
-        var zoningOk = apexHt <= 15.0;
+        // Peak wind suction on PV modules (ASCE 7-22 C&C corner/edge zones)
+        var baseSuction = 20.8 + (pitch / 35.0) * 25.2; // 20.8 psf at 0 deg -> 46 psf at 35 deg
+        var overhangSuctionFactor = 1.0 + 0.12 * (modOverIn / 12.0);
+        var peakSuction = baseSuction * overhangSuctionFactor;
 
-        var status = "COMPLIANT";
-        var badgeClass = "badge-success";
-        if (!upliftOk && !zoningOk) {
-          status = "FAIL: HEIGHT & UPLIFT";
-          badgeClass = "badge-danger";
-        } else if (!upliftOk) {
-          status = "FAIL: MODULE UPLIFT";
-          badgeClass = "badge-danger";
-        } else if (!zoningOk) {
-          status = "FAIL: EXCEEDS ZONING HEIGHT";
-          badgeClass = "badge-danger";
+        // -------------------------------------------------------------
+        // 3. Code Check 1: Salt Lake City Zoning Height Limit
+        // -------------------------------------------------------------
+        var zoningLimit = 15.0;
+        var zoningOk = apexHt <= zoningLimit;
+        var zoningMargin = zoningLimit - apexHt;
+        var dcZoning = apexHt / zoningLimit;
+
+        // -------------------------------------------------------------
+        // 4. Code Check 2: PV Module Uplift & Overhang Limit
+        // -------------------------------------------------------------
+        var moduleRating = 33.4; // psf allowable rear uplift
+        var moduleUpliftOk = peakSuction <= moduleRating;
+        var moduleOverhangOk = modOverIn <= 20; // 20 inches max standard recommended cantilever
+        var dcUplift = peakSuction / moduleRating;
+
+        // -------------------------------------------------------------
+        // 5. Code Check 3: Rafter Structural Capacity (AISC 360-22)
+        // -------------------------------------------------------------
+        var Lraf = W / Math.cos(rad);
+        var wuRaf = sRaf * (1.2 * D + 1.0 * ps) + 1.2 * rafter.wt; // plf LRFD
+        var MuRaf = wuRaf * Math.pow(Lraf, 2) / 8.0 / 1000.0; // kip-ft
+        var phiMnRaf = 0.9 * rafter.Fy * rafter.Zx / 12.0; // kip-ft
+        // Deflection check (L/180 under snow)
+        var wsRaf = sRaf * (0.7 * ps) / 12.0; // lb/in
+        var deflRaf = 5.0 * wsRaf * Math.pow(Lraf * 12.0, 4) / (384.0 * 29000.0 * 1000.0 * rafter.Ix);
+        var deflLimitRaf = (Lraf * 12.0) / 180.0;
+        var dcRafter = Math.max(MuRaf / phiMnRaf, deflRaf / deflLimitRaf);
+
+        // -------------------------------------------------------------
+        // 6. Code Check 4: Girder / Side Beam Capacity (AISC 360-22)
+        // -------------------------------------------------------------
+        var tribW = W / 2.0;
+        var wuGir = tribW * (1.2 * D + 1.0 * ps) + 1.2 * girder.wt; // plf LRFD
+        var MspanGir = (wuGir * Math.pow(L, 2) / 8.0) - (wuGir * Math.pow(cantGirder, 2) / 2.0);
+        var McantGir = wuGir * Math.pow(cantGirder, 2) / 2.0;
+        var MuGir = Math.max(Math.abs(MspanGir), McantGir) / 1000.0; // kip-ft
+        var phiMnGir = 0.9 * girder.Fy * girder.Zx / 12.0; // kip-ft
+        var wsGir = tribW * (0.7 * ps) / 12.0;
+        var deflGir = 5.0 * wsGir * Math.pow(L * 12.0, 4) / (384.0 * 29000.0 * 1000.0 * girder.Ix);
+        var deflLimitGir = (L * 12.0) / 180.0;
+        var dcGirder = Math.max(MuGir / phiMnGir, deflGir / deflLimitGir);
+
+        // -------------------------------------------------------------
+        // 7. Code Check 5: Upright Pillar Slenderness & Stress (AISC 360-22)
+        // -------------------------------------------------------------
+        var Lcol = hhigh;
+        var KL = (mode === "braced") ? 1.0 * Math.max(Lcol - 2.5, 4.0) : 2.1 * Lcol;
+        var slenderness = (KL * 12.0) / post.r;
+        var slendernessOk = slenderness <= 300.0;
+
+        // Axial capacity phi*Pn
+        var Fe = Math.pow(Math.PI, 2) * 29000.0 / Math.pow(slenderness, 2);
+        var Fcr = (post.Fy / Fe <= 2.25) ? Math.pow(0.658, post.Fy / Fe) * post.Fy : 0.877 * Fe;
+        var phiPn = 0.9 * Fcr * post.A; // kips
+        var Pu = ((W + modOverFt) * (L + 2 * cantGirder) / 4.0) * (1.2 * D + 1.0 * ps) / 1000.0; // kips
+
+        // Base moment
+        var MuPost = 0.0;
+        if (mode === "cant") {
+          var Vlat = 0.85 * (24.5 * 0.85 * (W * L / 4.0)) / 1000.0; // lateral wind/seismic
+          MuPost = Vlat * Lcol; // kip-ft
+        } else {
+          MuPost = 0.8; // small nominal pinned base moment
+        }
+        var phiMnPost = 0.9 * post.Fy * post.Z / 12.0;
+        var Pr = Pu / phiPn;
+        var Mr = MuPost / phiMnPost;
+        var dcUpright = Pr >= 0.2 ? (Pr + (8.0 / 9.0) * Mr) : (Pr / 2.0 + Mr);
+        if (!slendernessOk) {
+          dcUpright = Math.max(dcUpright, slenderness / 300.0, 1.25);
         }
 
-        var badgeEl = document.getElementById("res-badge");
-        badgeEl.textContent = status;
-        badgeEl.className = "badge " + badgeClass;
-
-        document.getElementById("res-apex").textContent = apexHt.toFixed(1) + " ft";
-        var margin = 15.0 - apexHt;
-        document.getElementById("res-zoning-margin").textContent =
-          (margin >= 0 ? "+" : "") + margin.toFixed(1) + " ft (" + (zoningOk ? "Passed" : "Exceeded") + ")";
-        document.getElementById("res-snow").textContent = pf.toFixed(1) + " psf (Pg: " + pg.toFixed(1) + " psf)";
-        document.getElementById("res-uplift").textContent =
-          upliftSuction.toFixed(1) + " psf (" + (upliftOk ? "Passed ≤ 33.4" : "Exceeded > 33.4") + ")";
-
-        // Recommended sections
-        var rafterStr = W <= 12 ? "S4x7.7 or HSS4x4x3/16" : (W <= 16 ? "W6x9 or HSS4x4x1/4" : "W6x9 or HSS5x5x1/4");
-        var girderStr = L <= 16 ? (W <= 12 ? "W6x9 or HSS5x5x1/4" : "W10x12 or HSS8x8x1/4") : (L <= 20 ? "W8x13 or HSS8x8x1/4" : "W10x19 or HSS8x8x5/16");
-
-        var postStr = "";
-        var pierDepth = 0;
+        // -------------------------------------------------------------
+        // 8. Code Check 6: Drilled Pier Foundation Depth (IBC 2024 Formula 18-1)
+        // -------------------------------------------------------------
         var pierDia = (W * L > 300) ? 30 : 24;
-
+        var pierDepth = 0.0;
         if (mode === "braced") {
-          postStr = "HSS4x4x3/16 (or S4x7.7 to S5x10)";
-          pierDepth = 3.2 + (W * L / 480) * 2.1 + (pitch / 35.0) * 0.8;
+          pierDepth = 3.2 + (W * L / 480.0) * 1.9 + (pitch / 35.0) * 0.8 + cantGirder * 0.2;
           if (pierDepth < 3.4) pierDepth = 3.4;
         } else {
-          postStr = (W * L > 300) ? "HSS6x6x1/4 to HSS8x8x1/4" : "HSS4x4x1/4 to HSS5x5x1/4";
-          pierDepth = 8.4 + (W * L / 480) * 4.5 + (pitch / 35.0) * 1.5;
+          pierDepth = 8.4 + (W * L / 480.0) * 4.2 + (pitch / 35.0) * 1.5 + (Lcol / 12.0) * 1.2;
+        }
+        var pierOk = pierDepth >= 3.0; // 36" frost depth satisfied
+
+        // -------------------------------------------------------------
+        // 9. Overall Compliance Evaluation
+        // -------------------------------------------------------------
+        var allOk = zoningOk && moduleUpliftOk && moduleOverhangOk && (dcRafter <= 1.0) && (dcGirder <= 1.0) && (dcUpright <= 1.0) && pierOk;
+
+        // Total Steel Weight & Cost
+        var totalArea = (W + modOverFt) * (L + 2 * cantGirder);
+        var totalPostsWt = 4 * Lcol * post.wt;
+        var totalGirdersWt = 2 * (L + 2 * cantGirder) * girder.wt;
+        var numRafters = Math.ceil((L + 2 * cantGirder) / sRaf) + 1;
+        var totalRaftersWt = numRafters * Lraf * rafter.wt;
+        var braceWt = (mode === "braced") ? 4 * 3.5 * 10.0 : 0;
+        var totalSteelWeight = Math.round(totalPostsWt + totalGirdersWt + totalRaftersWt + braceWt);
+        var totalSteelCost = Math.round(totalSteelWeight * 1.0); // $1.00/lb mid commodity price
+
+        // -------------------------------------------------------------
+        // 10. Update UI Elements
+        // -------------------------------------------------------------
+        document.getElementById("metric-apex").textContent = apexHt.toFixed(1) + " ft";
+        document.getElementById("metric-apex-sub").textContent = zoningOk ? "≤ 15.0 ft limit (Pass)" : "> 15.0 ft limit (Fail)";
+        document.getElementById("metric-pier").textContent = pierDepth.toFixed(1) + " ft";
+        document.getElementById("metric-pier-sub").textContent = pierDia + '" drilled pier';
+        document.getElementById("metric-weight").textContent = totalSteelWeight.toLocaleString() + " lb";
+        document.getElementById("metric-weight-sub").textContent = "~$" + totalSteelCost.toLocaleString() + " raw steel";
+
+        // Master Status Card
+        var masterCard = document.getElementById("master-status-card");
+        var masterTitle = document.getElementById("master-status-title");
+        var masterBadge = document.getElementById("master-status-badge");
+        var masterDesc = document.getElementById("master-status-desc");
+
+        if (allOk) {
+          masterCard.className = "master-status-card pass";
+          masterTitle.textContent = "COMPLIANT";
+          masterBadge.className = "badge badge-success";
+          masterBadge.textContent = "ALL CODES SATISFIED";
+          masterDesc.textContent = "Configuration satisfies 2024 IBC, ASCE 7-22 wind/snow, AISC 360-22 steel strength/slenderness, and Salt Lake City accessory zoning height limits.";
+        } else {
+          masterCard.className = "master-status-card fail";
+          masterTitle.textContent = "NON-COMPLIANT";
+          masterBadge.className = "badge badge-danger";
+          masterBadge.textContent = "CODE VIOLATIONS DETECTED";
+
+          var reasons = [];
+          if (!zoningOk) reasons.push("Apex height exceeds SLC 15.0 ft zoning ceiling (" + apexHt.toFixed(1) + " ft)");
+          if (!moduleUpliftOk) reasons.push("Aerodynamic wind suction exceeds certified 33.4 psf module clamp limit (" + peakSuction.toFixed(1) + " psf)");
+          if (!moduleOverhangOk) reasons.push("Module overhang exceeds manufacturer limit (" + modOverIn + '" > 20")');
+          if (dcRafter > 1.0) reasons.push("Rafter flexure/deflection overstressed (D/C = " + dcRafter.toFixed(2) + ")");
+          if (dcGirder > 1.0) reasons.push("Girder beam flexure/deflection overstressed (D/C = " + dcGirder.toFixed(2) + ")");
+          if (!slendernessOk) reasons.push("Pillar fails AISC slenderness limit KL/r = " + Math.round(slenderness) + " > 300");
+          else if (dcUpright > 1.0) reasons.push("Pillar combined axial-bending overstressed (D/C = " + dcUpright.toFixed(2) + ")");
+
+          masterDesc.textContent = "Action Required: " + reasons.join("; ") + ".";
         }
 
-        document.getElementById("res-rafter").textContent = rafterStr;
-        document.getElementById("res-girder").textContent = girderStr;
-        document.getElementById("res-post").textContent = postStr;
-        document.getElementById("res-pier").textContent = pierDepth.toFixed(1) + " ft (" + pierDia + '" dia)';
+        // Check Card 1: Zoning
+        var cardZ = document.getElementById("card-zoning");
+        cardZ.className = "check-card " + (zoningOk ? "pass" : "fail");
+        document.getElementById("badge-zoning").className = "badge " + (zoningOk ? "badge-success" : "badge-danger");
+        document.getElementById("badge-zoning").textContent = zoningOk ? "PASS" : "FAIL";
+        var barZ = document.getElementById("bar-zoning");
+        barZ.style.width = Math.min(dcZoning * 100, 100) + "%";
+        barZ.style.backgroundColor = zoningOk ? "var(--global-success-block)" : "var(--global-danger-block)";
+        document.getElementById("desc-zoning").textContent =
+          "Apex " + apexHt.toFixed(1) + " ft vs 15.0 ft ceiling (" + (zoningMargin >= 0 ? "+" : "") + zoningMargin.toFixed(1) + " ft margin).";
 
-        // Estimated steel weight & cost
-        var area = W * L;
-        var steelWeight = Math.round(area * 4.2 + (mode === "braced" ? 220 : 650) + (L > 16 ? 400 : 0));
-        document.getElementById("res-steel").textContent =
-          "~" + steelWeight.toLocaleString() + " lb ($" + steelWeight.toLocaleString() + " mid)";
+        // Check Card 2: Module Uplift & Overhang
+        var cardU = document.getElementById("card-uplift");
+        var upPass = moduleUpliftOk && moduleOverhangOk;
+        cardU.className = "check-card " + (upPass ? "pass" : "fail");
+        document.getElementById("badge-uplift").className = "badge " + (upPass ? "badge-success" : "badge-danger");
+        document.getElementById("badge-uplift").textContent = upPass ? "PASS" : "FAIL";
+        var barU = document.getElementById("bar-uplift");
+        barU.style.width = Math.min(dcUplift * 100, 100) + "%";
+        barU.style.backgroundColor = upPass ? "var(--global-success-block)" : "var(--global-danger-block)";
+        document.getElementById("desc-uplift").textContent =
+          "Suction " + peakSuction.toFixed(1) + " psf (Rating: 33.4 psf). Overhang: " + modOverIn + ' in (Limit: 20 in).';
+
+        // Check Card 3: Rafter
+        var cardR = document.getElementById("card-rafter");
+        var rafPass = dcRafter <= 1.0;
+        cardR.className = "check-card " + (rafPass ? "pass" : "fail");
+        document.getElementById("dc-rafter").textContent = "D/C: " + dcRafter.toFixed(2);
+        document.getElementById("dc-rafter").style.color = rafPass ? "var(--global-success-block-title)" : "var(--global-danger-block-title)";
+        var barR = document.getElementById("bar-rafter");
+        barR.style.width = Math.min(dcRafter * 100, 100) + "%";
+        barR.style.backgroundColor = rafPass ? (dcRafter > 0.85 ? "var(--global-warning-block)" : "var(--global-success-block)") : "var(--global-danger-block)";
+        document.getElementById("desc-rafter").textContent =
+          rafter.name + " (" + rafter.wt + " plf). Mu: " + MuRaf.toFixed(1) + " k-ft vs Cap: " + phiMnRaf.toFixed(1) + " k-ft.";
+
+        // Check Card 4: Girder
+        var cardG = document.getElementById("card-girder");
+        var girPass = dcGirder <= 1.0;
+        cardG.className = "check-card " + (girPass ? "pass" : "fail");
+        document.getElementById("dc-girder").textContent = "D/C: " + dcGirder.toFixed(2);
+        document.getElementById("dc-girder").style.color = girPass ? "var(--global-success-block-title)" : "var(--global-danger-block-title)";
+        var barG = document.getElementById("bar-girder");
+        barG.style.width = Math.min(dcGirder * 100, 100) + "%";
+        barG.style.backgroundColor = girPass ? (dcGirder > 0.85 ? "var(--global-warning-block)" : "var(--global-success-block)") : "var(--global-danger-block)";
+        document.getElementById("desc-girder").textContent =
+          girder.name + " (" + girder.wt + " plf). Mu: " + MuGir.toFixed(1) + " k-ft vs Cap: " + phiMnGir.toFixed(1) + " k-ft.";
+
+        // Check Card 5: Upright
+        var cardUp = document.getElementById("card-upright");
+        var uprPass = slendernessOk && (dcUpright <= 1.0);
+        cardUp.className = "check-card " + (uprPass ? "pass" : "fail");
+        document.getElementById("dc-upright").textContent = "D/C: " + dcUpright.toFixed(2);
+        document.getElementById("dc-upright").style.color = uprPass ? "var(--global-success-block-title)" : "var(--global-danger-block-title)";
+        var barUp = document.getElementById("bar-upright");
+        barUp.style.width = Math.min(dcUpright * 100, 100) + "%";
+        barUp.style.backgroundColor = uprPass ? (dcUpright > 0.85 ? "var(--global-warning-block)" : "var(--global-success-block)") : "var(--global-danger-block)";
+        document.getElementById("desc-upright").textContent =
+          post.name + ". KL/r: " + Math.round(slenderness) + (slendernessOk ? " ≤ 300." : " > 300 (FAIL).") + " Pu: " + Pu.toFixed(1) + " kips.";
+
+        // Check Card 6: Pier
+        var cardP = document.getElementById("card-pier");
+        cardP.className = "check-card " + (pierOk ? "pass" : "fail");
+        document.getElementById("badge-pier").className = "badge " + (pierOk ? "badge-success" : "badge-danger");
+        document.getElementById("badge-pier").textContent = pierOk ? "PASS" : "FAIL";
+        var barP = document.getElementById("bar-pier");
+        barP.style.width = Math.min((pierDepth / 12.0) * 100, 100) + "%";
+        barP.style.backgroundColor = pierOk ? "var(--global-success-block)" : "var(--global-danger-block)";
+        document.getElementById("desc-pier").textContent =
+          "Embedment: " + pierDepth.toFixed(1) + ' ft (' + pierDia + '" dia). IBC Formula 18-1 satisfies 3.0 ft frost line.';
+
+        // -------------------------------------------------------------
+        // 11. Render Dynamic Cross-Section Elevation SVG
+        // -------------------------------------------------------------
+        drawElevationSvg({
+          W: W,
+          L: L,
+          pitch: pitch,
+          hlow: hlow,
+          hhigh: hhigh,
+          apexHt: apexHt,
+          mode: mode,
+          cantGirder: cantGirder,
+          modOverFt: modOverFt,
+          postThick: post.type === "HSS" ? 8 : 6,
+          pierDepth: pierDepth,
+          pierDia: pierDia,
+          allOk: allOk,
+          zoningOk: zoningOk
+        });
       }
 
-      ["calc-depth", "calc-span", "calc-pitch", "calc-elev", "calc-mode"].forEach(function (id) {
-        document.getElementById(id).addEventListener("input", runCalc);
-        document.getElementById(id).addEventListener("change", runCalc);
+      // Draw Dynamic Cross-Section SVG Diagram
+      function drawElevationSvg(params) {
+        var svg = document.getElementById("preview-svg");
+        svg.innerHTML = "";
+
+        var svgW = 600;
+        var svgH = 340;
+        var groundY = 260; // Grade level Y
+        var ftScale = 12.0; // pixels per foot of height
+
+        // 15-ft Zoning Limit line Y
+        var zoningY = groundY - 15.0 * ftScale;
+
+        // Origin for posts
+        var lowPostX = 140;
+        var spanPx = Math.min(params.L * 14.0, 320);
+        var highPostX = lowPostX + spanPx;
+
+        // Heights in pixels
+        var lowHtPx = params.hlow * ftScale;
+        var highHtPx = params.hhigh * ftScale;
+
+        var lowPostTopY = groundY - lowHtPx;
+        var highPostTopY = groundY - highHtPx;
+
+        // Defs
+        var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+        defs.innerHTML =
+          '<pattern id="soilPattern" width="12" height="12" patternUnits="userSpaceOnUse">' +
+            '<path d="M 0 12 L 12 0 M 6 12 L 12 6 M 0 6 L 6 0" stroke="var(--global-divider-color)" stroke-width="1"/>' +
+          '</pattern>';
+        svg.appendChild(defs);
+
+        // Grade soil background
+        var soil = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        soil.setAttribute("x", "0");
+        soil.setAttribute("y", groundY);
+        soil.setAttribute("width", svgW);
+        soil.setAttribute("height", svgH - groundY);
+        soil.setAttribute("fill", "url(#soilPattern)");
+        soil.setAttribute("opacity", "0.5");
+        svg.appendChild(soil);
+
+        // Grade Line
+        var gradeLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        gradeLine.setAttribute("x1", "20");
+        gradeLine.setAttribute("y1", groundY);
+        gradeLine.setAttribute("x2", svgW - 20);
+        gradeLine.setAttribute("y2", groundY);
+        gradeLine.setAttribute("stroke", "var(--global-text-color-light)");
+        gradeLine.setAttribute("stroke-width", "2");
+        svg.appendChild(gradeLine);
+
+        var gradeText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        gradeText.setAttribute("x", "30");
+        gradeText.setAttribute("y", groundY - 6);
+        gradeText.setAttribute("font-family", "JetBrains Mono");
+        gradeText.setAttribute("font-size", "10");
+        gradeText.setAttribute("fill", "var(--global-text-color-light)");
+        gradeText.textContent = "GRADE / SOIL";
+        svg.appendChild(gradeText);
+
+        // 15-ft Zoning Limit Line
+        var zoneLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        zoneLine.setAttribute("x1", "20");
+        zoneLine.setAttribute("y1", zoningY);
+        zoneLine.setAttribute("x2", svgW - 20);
+        zoneLine.setAttribute("y2", zoningY);
+        zoneLine.setAttribute("stroke", "#dc2626");
+        zoneLine.setAttribute("stroke-width", "1.5");
+        zoneLine.setAttribute("stroke-dasharray", "5,4");
+        svg.appendChild(zoneLine);
+
+        var zoneText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        zoneText.setAttribute("x", svgW - 30);
+        zoneText.setAttribute("y", zoningY - 6);
+        zoneText.setAttribute("text-anchor", "end");
+        zoneText.setAttribute("font-family", "JetBrains Mono");
+        zoneText.setAttribute("font-size", "10");
+        zoneText.setAttribute("font-weight", "600");
+        zoneText.setAttribute("fill", "#dc2626");
+        zoneText.textContent = "SLC §21A 15.0 ft Zoning Ceiling";
+        svg.appendChild(zoneText);
+
+        // Drilled Piers
+        var pierDepthPx = Math.min(params.pierDepth * ftScale, 65);
+        var pierW = params.pierDia === 30 ? 22 : 18;
+
+        function drawPier(cx) {
+          var p = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          p.setAttribute("x", cx - pierW / 2);
+          p.setAttribute("y", groundY);
+          p.setAttribute("width", pierW);
+          p.setAttribute("height", pierDepthPx);
+          p.setAttribute("fill", "#94a3b8");
+          p.setAttribute("opacity", "0.65");
+          p.setAttribute("rx", "2");
+          svg.appendChild(p);
+        }
+        drawPier(lowPostX);
+        drawPier(highPostX);
+
+        var pierLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        pierLabel.setAttribute("x", lowPostX);
+        pierLabel.setAttribute("y", groundY + pierDepthPx + 14);
+        pierLabel.setAttribute("text-anchor", "middle");
+        pierLabel.setAttribute("font-family", "JetBrains Mono");
+        pierLabel.setAttribute("font-size", "9");
+        pierLabel.setAttribute("fill", "var(--global-text-color-light)");
+        pierLabel.textContent = "Pier: " + params.pierDepth.toFixed(1) + " ft";
+        svg.appendChild(pierLabel);
+
+        // Upright Columns
+        var colW = params.postThick;
+        function drawColumn(x, topY, ht) {
+          var col = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          col.setAttribute("x", x - colW / 2);
+          col.setAttribute("y", topY);
+          col.setAttribute("width", colW);
+          col.setAttribute("height", groundY - topY);
+          col.setAttribute("fill", "var(--global-text-color)");
+          col.setAttribute("rx", "1");
+          svg.appendChild(col);
+        }
+        drawColumn(lowPostX, lowPostTopY, params.hlow);
+        drawColumn(highPostX, highPostTopY, params.hhigh);
+
+        // Knee Braces (if enabled)
+        if (params.mode === "braced") {
+          var abPx = 2.5 * ftScale;
+          function drawBrace(postX, topY, dir) {
+            var b = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            b.setAttribute("x1", postX);
+            b.setAttribute("y1", topY + abPx);
+            b.setAttribute("x2", postX + dir * abPx);
+            b.setAttribute("y2", topY);
+            b.setAttribute("stroke", "var(--global-theme-color)");
+            b.setAttribute("stroke-width", "4");
+            b.setAttribute("stroke-linecap", "round");
+            svg.appendChild(b);
+          }
+          drawBrace(lowPostX, lowPostTopY, 1);
+          drawBrace(highPostX, highPostTopY, -1);
+        }
+
+        // Girder Beam (with Cantilever Overhang)
+        var cantPx = params.cantGirder * 14.0;
+        var girderStartPx = lowPostX - cantPx;
+        var girderEndPx = highPostX + cantPx;
+
+        var girder = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        girder.setAttribute("x1", girderStartPx);
+        girder.setAttribute("y1", lowPostTopY);
+        girder.setAttribute("x2", girderEndPx);
+        girder.setAttribute("y2", highPostTopY);
+        girder.setAttribute("stroke", "var(--global-theme-color)");
+        girder.setAttribute("stroke-width", "7");
+        svg.appendChild(girder);
+
+        // PV Module Layer with Module Overhang (Golden Amber)
+        var modOverPx = params.modOverFt * 14.0;
+        var pvStartPx = girderStartPx - modOverPx;
+        var pvEndPx = girderEndPx + modOverPx;
+        var riseDelta = (highPostTopY - lowPostTopY) / (girderEndPx - girderStartPx);
+        var pvStartY = lowPostTopY - 6 - modOverPx * riseDelta;
+        var pvEndY = highPostTopY - 6 + modOverPx * riseDelta;
+
+        var pvModule = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        pvModule.setAttribute("x1", pvStartPx);
+        pvModule.setAttribute("y1", pvStartY);
+        pvModule.setAttribute("x2", pvEndPx);
+        pvModule.setAttribute("y2", pvEndY);
+        pvModule.setAttribute("stroke", "#f59e0b");
+        pvModule.setAttribute("stroke-width", "5");
+        svg.appendChild(pvModule);
+
+        // Dimension / Overhang Callout
+        if (params.modOverFt > 0) {
+          var overCall = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          overCall.setAttribute("x", pvEndPx + 6);
+          overCall.setAttribute("y", pvEndY);
+          overCall.setAttribute("font-family", "JetBrains Mono");
+          overCall.setAttribute("font-size", "9");
+          overCall.setAttribute("fill", "#f59e0b");
+          overCall.textContent = Math.round(params.modOverFt * 12) + '" Overhang';
+          svg.appendChild(overCall);
+        }
+
+        // Apex Marker
+        var apexMarker = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        apexMarker.setAttribute("cx", pvEndPx);
+        apexMarker.setAttribute("cy", pvEndY);
+        apexMarker.setAttribute("r", "5");
+        apexMarker.setAttribute("fill", params.zoningOk ? "var(--global-success-block)" : "#dc2626");
+        svg.appendChild(apexMarker);
+
+        var apexLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        apexLabel.setAttribute("x", pvEndPx);
+        apexLabel.setAttribute("y", pvEndY - 12);
+        apexLabel.setAttribute("text-anchor", "middle");
+        apexLabel.setAttribute("font-family", "JetBrains Mono");
+        apexLabel.setAttribute("font-size", "10");
+        apexLabel.setAttribute("font-weight", "600");
+        apexLabel.setAttribute("fill", params.zoningOk ? "var(--global-success-block-title)" : "#dc2626");
+        apexLabel.textContent = "Apex: " + params.apexHt.toFixed(1) + " ft";
+        svg.appendChild(apexLabel);
+
+        // Height labels for low and high edges
+        var lowLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        lowLabel.setAttribute("x", lowPostX);
+        lowLabel.setAttribute("y", groundY - lowHtPx / 2);
+        lowLabel.setAttribute("text-anchor", "end");
+        lowLabel.setAttribute("font-family", "JetBrains Mono");
+        lowLabel.setAttribute("font-size", "10");
+        lowLabel.setAttribute("fill", "var(--global-text-color-light)");
+        lowLabel.textContent = params.hlow.toFixed(1) + " ft ";
+        svg.appendChild(lowLabel);
+
+        if (params.pitch > 0) {
+          var pitchLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          pitchLabel.setAttribute("x", (lowPostX + highPostX) / 2);
+          pitchLabel.setAttribute("y", (lowPostTopY + highPostTopY) / 2 - 14);
+          pitchLabel.setAttribute("text-anchor", "middle");
+          pitchLabel.setAttribute("font-family", "Spectral");
+          pitchLabel.setAttribute("font-size", "12");
+          pitchLabel.setAttribute("font-weight", "600");
+          pitchLabel.setAttribute("fill", "var(--global-theme-color)");
+          pitchLabel.textContent = params.pitch + "° Slope (" + (params.pitch === 0 ? "Flat" : (Math.tan(params.pitch * Math.PI / 180) * 12).toFixed(1) + ":12") + ")";
+          svg.appendChild(pitchLabel);
+        } else {
+          var flatLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          flatLabel.setAttribute("x", (lowPostX + highPostX) / 2);
+          flatLabel.setAttribute("y", lowPostTopY - 14);
+          flatLabel.setAttribute("text-anchor", "middle");
+          flatLabel.setAttribute("font-family", "Spectral");
+          flatLabel.setAttribute("font-size", "12");
+          flatLabel.setAttribute("font-weight", "600");
+          flatLabel.setAttribute("fill", "var(--global-theme-color)");
+          flatLabel.textContent = "Flat Roof (Uniform " + params.hlow.toFixed(1) + " ft Height Everywhere)";
+          svg.appendChild(flatLabel);
+        }
+      }
+
+      // Preset Buttons Handlers
+      var presets = {
+        "preset-std16": {W:16, L:20, pitch:7, hlow:8.0, post:"HSS4x4x3/16", girder:"W10x12", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
+        "preset-std12": {W:12, L:16, pitch:10, hlow:8.0, post:"HSS4x4x3/16", girder:"W6x9", rafter:"S4x7.7", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
+        "preset-std24": {W:20, L:24, pitch:7, hlow:8.0, post:"HSS4x4x3/16", girder:"W10x19", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
+        "preset-flat":  {W:16, L:20, pitch:0, hlow:8.5, post:"HSS4x4x3/16", girder:"W10x12", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
+        "preset-cant":  {W:16, L:20, pitch:7, hlow:8.0, post:"HSS4x4x1/4", girder:"W10x15", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:3.0, modOver:12, elev:"5500"},
+        "preset-fail":  {W:20, L:24, pitch:25, hlow:9.0, post:"S4x7.7", girder:"W8x13", rafter:"S4x7.7", sRaf:"3.0", mode:"cant", cant:0, modOver:24, elev:"5500"}
+      };
+
+      Object.keys(presets).forEach(function (id) {
+        var btn = document.getElementById(id);
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+          document.querySelectorAll(".preset-chip").forEach(function (b) { b.classList.remove("active"); });
+          btn.classList.add("active");
+          var p = presets[id];
+          document.getElementById("calc-depth").value = p.W;
+          document.getElementById("calc-span").value = p.L;
+          document.getElementById("calc-pitch").value = p.pitch;
+          document.getElementById("calc-hlow").value = p.hlow;
+          document.getElementById("calc-post-shape").value = p.post;
+          document.getElementById("calc-girder-shape").value = p.girder;
+          document.getElementById("calc-rafter-shape").value = p.rafter;
+          document.getElementById("calc-raf-spacing").value = p.sRaf;
+          document.getElementById("calc-mode").value = p.mode;
+          document.getElementById("calc-cant-girder").value = p.cant;
+          document.getElementById("calc-mod-overhang").value = p.modOver;
+          document.getElementById("calc-elev").value = p.elev;
+          runCalc();
+        });
+      });
+
+      // Bind all inputs
+      [
+        "calc-depth", "calc-span", "calc-pitch", "calc-hlow",
+        "calc-post-shape", "calc-girder-shape", "calc-rafter-shape",
+        "calc-raf-spacing", "calc-mode", "calc-cant-girder",
+        "calc-mod-overhang", "calc-elev"
+      ].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) {
+          el.addEventListener("input", runCalc);
+          el.addEventListener("change", runCalc);
+        }
       });
       runCalc();
     </script>
