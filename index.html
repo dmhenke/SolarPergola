@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-theme-setting="system">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solar Pergola Structural Sizing & Regulatory Compliance Engine | David M. Henke</title>
+    <meta
+      name="description"
+      content="Preliminary structural sizing, dimensional limit analysis, and building code compliance for freestanding 4-post steel solar pergolas in Salt Lake City, Utah (ZIP 84108) under 2024 IBC, ASCE 7-22, AISC 360-22, and Utah Code §15A-3-107."
+    />
+    <meta name="author" content="David M. Henke" />
+
+    <!-- Google Fonts matching al-folio & davidhenke2.github.io -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700|Spectral:400,500,600,700|JetBrains+Mono:400,500&display=swap"
+    />
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+    />
+
+    <!-- Theme initialization script (prevents theme flash before paint) -->
+    <script>
+      (function () {
+        var setting = "system";
+        try {
+          setting = localStorage.getItem("theme-setting") || "system";
+        } catch (e) {
+          /* storage unavailable */
+        }
+        var resolved =
+          setting === "system"
+            ? window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light"
+            : setting;
+        document.documentElement.setAttribute("data-theme", resolved);
+        document.documentElement.setAttribute("data-theme-setting", setting);
+      })();
+    </script>
+
+    <style>
+      /* ---------------------------------------------------------------
+       * Theme variables — mirrors the al-folio clinical-teal palette
+       * from davidhenke2.github.io and multifunction-solar-utah.
+       * --------------------------------------------------------------- */
+      :root {
+        color-scheme: light;
+        --global-bg-color: #ffffff;
+        --global-code-bg-color: rgba(13, 148, 136, 0.06);
+        --global-text-color: #1a1a1a;
+        --global-text-color-light: #666666;
+        --global-theme-color: #0d9488;
+        --global-hover-color: #0f766e;
+        --global-hover-text-color: #ffffff;
+        --global-footer-bg-color: #1c1c1d;
+        --global-footer-text-color: #e8e8e8;
+        --global-footer-link-color: #ffffff;
+        --global-divider-color: rgba(0, 0, 0, 0.1);
+        --global-card-bg-color: #ffffff;
+        --global-highlight-color: #b71c1c;
+        --global-surface-color: #fbfbfc;
+        --global-border-color: #e2e8f0;
+
+        --global-success-block: #059669;
+        --global-success-block-bg: #ecfdf5;
+        --global-success-block-text: #065f46;
+        --global-success-block-title: #047857;
+
+        --global-warning-block: #d97706;
+        --global-warning-block-bg: #fffbeb;
+        --global-warning-block-text: #92400e;
+        --global-warning-block-title: #b45309;
+
+        --global-danger-block: #dc2626;
+        --global-danger-block-bg: #fef2f2;
+        --global-danger-block-text: #991b1b;
+        --global-danger-block-title: #b91c1c;
+      }
+
+      html[data-theme="dark"] {
+        color-scheme: dark;
+        --global-bg-color: #1c1c1d;
+        --global-code-bg-color: #262c30;
+        --global-text-color: #e8e8e8;
+        --global-text-color-light: #9ca3af;
+        --global-theme-color: #2dd4bf;
+        --global-hover-color: #2dd4bf;
+        --global-hover-text-color: #1c1c1d;
+        --global-footer-bg-color: #111827;
+        --global-footer-text-color: #e8e8e8;
+        --global-footer-link-color: #ffffff;
+        --global-divider-color: #374151;
+        --global-card-bg-color: #212529;
+        --global-highlight-color: #ff6b6b;
+        --global-surface-color: #161617;
+        --global-border-color: #374151;
+
+        --global-success-block: #10b981;
+        --global-success-block-bg: #064e3b;
+        --global-success-block-text: #a7f3d0;
+        --global-success-block-title: #6ee7b7;
+
+        --global-warning-block: #f59e0b;
+        --global-warning-block-bg: #78350f;
+        --global-warning-block-text: #fde68a;
+        --global-warning-block-title: #fcd34d;
+
+        --global-danger-block: #ef4444;
+        --global-danger-block-bg: #7f1d1d;
+        --global-danger-block-text: #fecaca;
+        --global-danger-block-title: #fca5a5;
+      }
+
+      /* ----- Base Reset --------------------------------------------- */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-feature-settings: "kern", "liga", "cv02", "cv03", "cv04", "cv11";
+        letter-spacing: 0.005em;
+        line-height: 1.7;
+        color: var(--global-text-color);
+        background-color: var(--global-bg-color);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: "Spectral", Georgia, "Times New Roman", serif;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--global-text-color);
+      }
+
+      code, pre, kbd, tt {
+        font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+        font-size: 0.86em;
+        background-color: var(--global-code-bg-color);
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        color: var(--global-theme-color);
+      }
+
+      pre code {
+        display: block;
+        padding: 1rem 1.25rem;
+        overflow-x: auto;
+        line-height: 1.5;
+        border-radius: 6px;
+        border: 1px solid var(--global-divider-color);
+      }
+
+      a {
+        color: var(--global-theme-color);
+        text-decoration: none;
+      }
+
+      /* ----- Navbar -------------------------------------------------- */
+      .navbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        padding: 0.85rem 1.5rem;
+        background-color: color-mix(in srgb, var(--global-bg-color) 88%, transparent);
+        backdrop-filter: saturate(180%) blur(12px);
+        -webkit-backdrop-filter: saturate(180%) blur(12px);
+        border-bottom: 1px solid var(--global-divider-color);
+      }
+
+      .navbar__brand {
+        font-family: "Spectral", Georgia, serif;
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--global-text-color);
+      }
+
+      .navbar__brand:hover {
+        color: var(--global-theme-color);
+      }
+
+      .navbar__links {
+        display: flex;
+        gap: 1.25rem;
+        margin-left: auto;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .navbar__links a {
+        font-size: 0.92rem;
+        font-weight: 500;
+        color: var(--global-text-color);
+        padding-bottom: 2px;
+        border-bottom: 1px solid transparent;
+        transition: color 0.18s ease, border-color 0.18s ease;
+      }
+
+      .navbar__links a:hover,
+      .navbar__links a.is-current {
+        color: var(--global-theme-color);
+        border-bottom-color: var(--global-theme-color);
+      }
+
+      .theme-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        line-height: 1;
+        padding: 0.35rem 0.5rem;
+        color: var(--global-text-color);
+        border-radius: 4px;
+        transition: color 0.18s ease, background-color 0.18s ease;
+      }
+
+      .theme-toggle:hover {
+        color: var(--global-theme-color);
+        background-color: var(--global-code-bg-color);
+      }
+
+      /* ----- Page header --------------------------------------------- */
+      .page-header {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 3.25rem 1.5rem 1.75rem;
+      }
+
+      .page-header__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--global-theme-color);
+        margin-bottom: 0.65rem;
+        font-weight: 600;
+      }
+
+      .page-header h1 {
+        font-size: 2.35rem;
+        line-height: 1.2;
+        margin-bottom: 0.85rem;
+      }
+
+      .page-header p.subtitle {
+        font-size: 1.08rem;
+        color: var(--global-text-color-light);
+        max-width: 72ch;
+        line-height: 1.65;
+      }
+
+      .header-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-top: 1.25rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--global-divider-color);
+        font-size: 0.85rem;
+        color: var(--global-text-color-light);
+      }
+
+      .header-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .header-meta strong {
+        color: var(--global-text-color);
+      }
+
+      /* ----- Main Layout Container ----------------------------------- */
+      .container {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 0 1.5rem 3.5rem;
+      }
+
+      /* ----- Tabs Navigation ----------------------------------------- */
+      .tabs {
+        display: flex;
+        gap: 0.25rem;
+        border-bottom: 1px solid var(--global-divider-color);
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .tab-button {
+        background: transparent;
+        border: none;
+        padding: 0.8rem 1.15rem;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.94rem;
+        font-weight: 500;
+        color: var(--global-text-color-light);
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        transition: color 0.18s ease, border-color 0.18s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+      }
+
+      .tab-button:hover {
+        color: var(--global-theme-color);
+      }
+
+      .tab-button.active {
+        color: var(--global-theme-color);
+        border-bottom-color: var(--global-theme-color);
+        font-weight: 600;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.25s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ----- Content Cards ------------------------------------------- */
+      .content {
+        background-color: var(--global-card-bg-color);
+        border: 1px solid var(--global-divider-color);
+        border-radius: 8px;
+        padding: 2.25rem;
+        margin-bottom: 2rem;
+      }
+
+      .content h2 {
+        font-size: 1.72rem;
+        margin-top: 2.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid var(--global-divider-color);
+      }
+
+      .content h2:first-child {
+        margin-top: 0;
+      }
+
+      .content h3 {
+        font-size: 1.25rem;
+        margin-top: 1.85rem;
+        margin-bottom: 0.75rem;
+        color: var(--global-theme-color);
+      }
+
+      .content p {
+        margin-bottom: 1rem;
+      }
+
+      .content ul, .content ol {
+        margin-left: 1.6rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .content li {
+        margin-bottom: 0.45rem;
+      }
+
+      .content a {
+        background-image: linear-gradient(var(--global-theme-color), var(--global-theme-color));
+        background-position: 0 100%;
+        background-repeat: no-repeat;
+        background-size: 100% 1px;
+        transition: background-size 0.2s ease;
+      }
+
+      .content a:hover {
+        background-size: 100% 2px;
+      }
+
+      /* ----- Metric Stat Grid ---------------------------------------- */
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0 2rem;
+      }
+
+      .stat-card {
+        background-color: var(--global-surface-color);
+        border: 1px solid var(--global-divider-color);
+        border-radius: 8px;
+        padding: 1.2rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      .stat-card__label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--global-text-color-light);
+      }
+
+      .stat-card__val {
+        font-family: "Spectral", Georgia, serif;
+        font-size: 1.85rem;
+        font-weight: 700;
+        line-height: 1.1;
+        color: var(--global-theme-color);
+      }
+
+      .stat-card__desc {
+        font-size: 0.82rem;
+        color: var(--global-text-color-light);
+        line-height: 1.4;
+      }
+
+      /* ----- Callout Boxes ------------------------------------------- */
+      .callout {
+        margin: 1.75rem 0;
+        padding: 1.15rem 1.35rem;
+        border-radius: 8px;
+        border: 1px solid var(--global-divider-color);
+        font-size: 0.95rem;
+      }
+
+      .callout strong.callout-title {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-size: 0.98rem;
+      }
+
+      .callout-success {
+        border-left: 4px solid var(--global-success-block);
+        background-color: var(--global-success-block-bg);
+        color: var(--global-success-block-text);
+      }
+      .callout-success strong.callout-title {
+        color: var(--global-success-block-title);
+      }
+
+      .callout-warning {
+        border-left: 4px solid var(--global-warning-block);
+        background-color: var(--global-warning-block-bg);
+        color: var(--global-warning-block-text);
+      }
+      .callout-warning strong.callout-title {
+        color: var(--global-warning-block-title);
+      }
+
+      .callout-danger {
+        border-left: 4px solid var(--global-danger-block);
+        background-color: var(--global-danger-block-bg);
+        color: var(--global-danger-block-text);
+      }
+      .callout-danger strong.callout-title {
+        color: var(--global-danger-block-title);
+      }
+
+      .callout-info {
+        border-left: 4px solid var(--global-theme-color);
+        background-color: color-mix(in srgb, var(--global-theme-color) 8%, var(--global-surface-color));
+        color: var(--global-text-color);
+      }
+      .callout-info strong.callout-title {
+        color: var(--global-theme-color);
+      }
+
+      /* ----- Tables -------------------------------------------------- */
+      .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+        border: 1px solid var(--global-divider-color);
+        border-radius: 8px;
+      }
+
+      table.data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+        text-align: left;
+      }
+
+      table.data-table th {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: var(--global-text-color-light);
+        padding: 0.75rem 0.85rem;
+        background-color: var(--global-surface-color);
+        border-bottom: 2px solid var(--global-divider-color);
+        white-space: nowrap;
+      }
+
+      table.data-table td {
+        padding: 0.7rem 0.85rem;
+        border-bottom: 1px solid var(--global-divider-color);
+        vertical-align: middle;
+      }
+
+      table.data-table tbody tr:hover {
+        background-color: color-mix(in srgb, var(--global-theme-color) 6%, transparent);
+      }
+
+      table.data-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.84rem;
+      }
+
+      /* ----- Badges -------------------------------------------------- */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.15rem 0.55rem;
+        border-radius: 999px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        border: 1px solid transparent;
+      }
+
+      .badge-success {
+        color: var(--global-success-block-title);
+        background-color: var(--global-success-block-bg);
+        border-color: color-mix(in srgb, var(--global-success-block) 35%, transparent);
+      }
+
+      .badge-danger {
+        color: var(--global-danger-block-title);
+        background-color: var(--global-danger-block-bg);
+        border-color: color-mix(in srgb, var(--global-danger-block) 35%, transparent);
+      }
+
+      .badge-warning {
+        color: var(--global-warning-block-text);
+        background-color: var(--global-warning-block-bg);
+        border-color: color-mix(in srgb, var(--global-warning-block) 35%, transparent);
+      }
+
+      .badge-neutral {
+        color: var(--global-text-color-light);
+        background-color: var(--global-surface-color);
+        border-color: var(--global-divider-color);
+      }
+
+      /* ----- Filters Bar --------------------------------------------- */
+      .filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .filter-btn {
+        background-color: var(--global-surface-color);
+        border: 1px solid var(--global-divider-color);
+        border-radius: 999px;
+        padding: 0.35rem 0.85rem;
+        font-family: inherit;
+        font-size: 0.82rem;
+        color: var(--global-text-color-light);
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+
+      .filter-btn:hover {
+        border-color: var(--global-theme-color);
+        color: var(--global-theme-color);
+      }
+
+      .filter-btn.active {
+        background-color: var(--global-theme-color);
+        border-color: var(--global-theme-color);
+        color: var(--global-hover-text-color);
+        font-weight: 600;
+      }
+
+      /* ----- Interactive Diagrams ------------------------------------ */
+      .diagram-box {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background-color: var(--global-surface-color);
+        border: 1px solid var(--global-divider-color);
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .diagram-box svg {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .diagram-caption {
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: var(--global-text-color-light);
+        text-align: center;
+      }
+
+      /* ----- Interactive Calculator Styles --------------------------- */
+      .calc-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 1.5rem;
+      }
+
+      @media (max-width: 820px) {
+        .calc-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .calc-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        background-color: var(--global-surface-color);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--global-divider-color);
+      }
+
+      .calc-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      .calc-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--global-text-color);
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .calc-group label span.val {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--global-theme-color);
+      }
+
+      .calc-group select,
+      .calc-group input[type="range"] {
+        padding: 0.5rem;
+        border: 1px solid var(--global-divider-color);
+        border-radius: 6px;
+        background-color: var(--global-bg-color);
+        color: var(--global-text-color);
+        font-family: inherit;
+        font-size: 0.92rem;
+      }
+
+      .calc-group input[type="range"] {
+        padding: 0;
+        accent-color: var(--global-theme-color);
+      }
+
+      .calc-results {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background-color: var(--global-surface-color);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--global-divider-color);
+      }
+
+      .calc-res-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--global-divider-color);
+      }
+
+      .calc-res-header h4 {
+        font-size: 1.15rem;
+        margin: 0;
+      }
+
+      .calc-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.45rem 0;
+        border-bottom: 1px solid var(--global-divider-color);
+        font-size: 0.9rem;
+      }
+
+      .calc-item:last-child {
+        border-bottom: none;
+      }
+
+      .calc-item .lbl {
+        color: var(--global-text-color-light);
+      }
+
+      .calc-item .val {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        color: var(--global-text-color);
+      }
+
+      /* ----- Footer -------------------------------------------------- */
+      footer.site-footer {
+        background-color: var(--global-footer-bg-color);
+        color: var(--global-footer-text-color);
+        font-size: 0.88rem;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        border-top: 1px solid var(--global-divider-color);
+      }
+
+      footer.site-footer a {
+        color: var(--global-footer-link-color);
+        text-decoration: underline;
+      }
+
+      footer.site-footer p + p {
+        margin-top: 0.5rem;
+        opacity: 0.75;
+      }
+
+      @media (max-width: 600px) {
+        .page-header h1 {
+          font-size: 1.85rem;
+        }
+        .content {
+          padding: 1.35rem;
+        }
+        .stat-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation Bar matching davidhenke2.github.io -->
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+      <a class="navbar__brand" href="https://dmhenke.github.io/davidhenke2.github.io/">David Henke</a>
+      <div class="navbar__links">
+        <a href="https://dmhenke.github.io/davidhenke2.github.io/">about</a>
+        <a href="https://dmhenke.github.io/davidhenke2.github.io/projects/">projects</a>
+        <a href="https://github.com/dmhenke/SolarPergola" target="_blank" rel="noopener noreferrer">
+          <i class="fa-brands fa-github"></i> repository
+        </a>
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button"
+          aria-label="Toggle light, dark, or system color theme"
+          title="Toggle theme"
+        >
+          <span id="theme-icon" aria-hidden="true">&#9788;</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <span class="page-header__eyebrow">
+        <i class="fa-solid fa-solar-panel"></i> Civil & Structural Engineering Report
+      </span>
+      <h1>Solar Pergola Structural Sizing & Regulatory Compliance Engine</h1>
+      <p class="subtitle">
+        Dimensional limit analysis, parametric structural sizing, and building code compliance evaluation for
+        freestanding 4-post steel solar pergolas in Salt Lake City, Utah (ZIP 84108).
+      </p>
+
+      <div class="header-meta">
+        <span><strong>Location:</strong> Salt Lake City East Bench (5,500 ft MSL)</span>
+        <span><strong>Building Codes:</strong> 2024 IBC &bull; ASCE 7-22 &bull; AISC 360-22</span>
+        <span><strong>State Amendments:</strong> Utah Code Title 15A &sect;3-107</span>
+        <span><strong>Zoning Limit:</strong> SLC Title 21A &le; 15.0 ft</span>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+      <!-- Tabs Navigation -->
+      <div class="tabs" role="tablist">
+        <button class="tab-button active" data-tab="overview" role="tab" aria-selected="true" aria-controls="overview">
+          <i class="fa-solid fa-compass-drafting"></i> Overview & Mechanics
+        </button>
+        <button class="tab-button" data-tab="loads" role="tab" aria-selected="false" aria-controls="loads">
+          <i class="fa-solid fa-snowflake"></i> Codes & Load Envelope
+        </button>
+        <button class="tab-button" data-tab="sizing" role="tab" aria-selected="false" aria-controls="sizing">
+          <i class="fa-solid fa-table-list"></i> System Sizing Matrix
+        </button>
+        <button class="tab-button" data-tab="optimization" role="tab" aria-selected="false" aria-controls="optimization">
+          <i class="fa-solid fa-chart-line"></i> Span & Section Optimization
+        </button>
+        <button class="tab-button" data-tab="calculator" role="tab" aria-selected="false" aria-controls="calculator">
+          <i class="fa-solid fa-calculator"></i> Interactive Sizer
+        </button>
+        <button class="tab-button" data-tab="permitting" role="tab" aria-selected="false" aria-controls="permitting">
+          <i class="fa-solid fa-clipboard-check"></i> Permitting Roadmap
+        </button>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- TAB 1: OVERVIEW & MECHANICS                                    -->
+      <!-- ============================================================== -->
+      <div id="overview" class="tab-content active" role="tabpanel">
+        <div class="content">
+          <h2>Executive Engineering Summary</h2>
+          <p>
+            Freestanding residential solar pergolas represent an increasingly high-value category of distributed clean energy
+            infrastructure in the Intermountain West. Unlike standard utility-scale or rooftop arrays, residential solar
+            pergolas must satisfy strict <strong>dual performance criteria</strong>: they must function as certified accessory
+            structures capable of enduring extreme mountain-front environmental loads, while complying with stringent
+            municipal accessory structure height limits.
+          </p>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <span class="stat-card__label">East Bench Snow</span>
+              <span class="stat-card__val">75.7 psf</span>
+              <span class="stat-card__desc">Design roof snow load (Pf) at 5,500 ft elevation per Utah Code §15A-3-107.</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Pier Depth Savings</span>
+              <span class="stat-card__val">60%</span>
+              <span class="stat-card__desc">Drilled concrete pier depth drops from 10–14 ft down to 3.4–5.5 ft with knee bracing.</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Zoning Envelope</span>
+              <span class="stat-card__val">&le; 15.0 ft</span>
+              <span class="stat-card__desc">Salt Lake City §21A.40.050 max apex height limit for detached accessory structures.</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Optimal Pitch</span>
+              <span class="stat-card__val">7&deg; &ndash; 10&deg;</span>
+              <span class="stat-card__desc">Sweet spot satisfying both zoning height and commercial PV module uplift limits.</span>
+            </div>
+          </div>
+
+          <h3>The Engineering Challenge: Wasatch Front Mechanics</h3>
+          <p>
+            In Salt Lake County (specifically ZIP 84108, encompassing the East Bench and foothill neighborhoods), structural design
+            is governed by a uniquely severe confluence of building code requirements:
+          </p>
+          <ul>
+            <li>
+              <strong>Elevated Ground Snow Loading ($P_g = 91.0\text{--}95.0\text{ psf}$):</strong> Because elevation climbs rapidly from
+              $4,239\text{ ft}$ at the valley floor to over $5,500\text{ ft}$, Utah Code §15A-3-107 mandates ground snow loads that
+              triple baseline national tables, resulting in flat roof snow loads exceeding $75\text{ psf}$.
+            </li>
+            <li>
+              <strong>Canyon Wind Outflow & Aerodynamic Suction ($V = 115\text{ mph}$):</strong> Open monoslope structures experience
+              severe localized wind uplift at roof edges and corners (ASCE 7-22 Chapter 30 C&C suction pressures reaching
+              $-46\text{ psf}$).
+            </li>
+            <li>
+              <strong>High Seismic Spectral Demand ($S_{DS} = 1.10\text{ g}$):</strong> Proximity to the Wasatch Fault Zone imposes
+              substantial lateral seismic forces on cantilevered columns carrying large roof masses.
+            </li>
+            <li>
+              <strong>Zoning Apex Height Ceiling ($H_{apex} \le 15.0\text{ ft}$):</strong> Salt Lake City Code §21A.40.050 restricts
+              detached accessory buildings to 15.0 feet in total height. At higher pitches ($20^\circ\text{--}35^\circ$), large
+              pergolas automatically violate zoning laws.
+            </li>
+          </ul>
+
+          <h2>Structural Coordinate System & Geometry</h2>
+          <p>
+            To guarantee unambiguous CAD/BIM modeling and automated parametric generation, the structural system is formalized
+            in a standard 3D coordinate frame:
+          </p>
+
+          <!-- SVG Structural Isometric Diagram -->
+          <div class="diagram-box">
+            <svg viewBox="0 0 860 480" width="100%" height="auto" style="background: var(--global-surface-color); border-radius: 6px;">
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--global-theme-color)" />
+                </marker>
+                <linearGradient id="roofGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="var(--global-theme-color)" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="var(--global-theme-color)" stop-opacity="0.08"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Pier Foundations -->
+              <ellipse cx="220" cy="390" rx="20" ry="8" fill="#94a3b8" opacity="0.6"/>
+              <rect x="208" y="390" width="24" height="60" fill="#94a3b8" opacity="0.4" rx="2"/>
+              <ellipse cx="610" cy="390" rx="20" ry="8" fill="#94a3b8" opacity="0.6"/>
+              <rect x="598" y="390" width="24" height="60" fill="#94a3b8" opacity="0.4" rx="2"/>
+              <ellipse cx="330" cy="310" rx="18" ry="7" fill="#64748b" opacity="0.5"/>
+              <rect x="320" y="310" width="20" height="50" fill="#64748b" opacity="0.3" rx="2"/>
+              <ellipse cx="700" cy="310" rx="18" ry="7" fill="#64748b" opacity="0.5"/>
+              <rect x="690" y="310" width="20" height="50" fill="#64748b" opacity="0.3" rx="2"/>
+
+              <!-- Ground Line -->
+              <line x1="80" y1="390" x2="780" y2="390" stroke="var(--global-divider-color)" stroke-width="2" stroke-dasharray="6,4"/>
+              <text x="100" y="415" font-family="JetBrains Mono" font-size="12" fill="var(--global-text-color-light)">Grade / Soil Surface</text>
+              <text x="220" y="465" font-family="JetBrains Mono" font-size="11" fill="var(--global-text-color-light)" text-anchor="middle">Drilled Pier (3.4 - 5.5 ft)</text>
+
+              <!-- Columns / Uprights -->
+              <!-- Front Low Left -->
+              <rect x="214" y="230" width="12" height="160" fill="#475569" rx="1"/>
+              <!-- Front Low Right -->
+              <rect x="604" y="230" width="12" height="160" fill="#475569" rx="1"/>
+              <!-- Rear High Left -->
+              <rect x="324" y="100" width="12" height="210" fill="#334155" rx="1"/>
+              <!-- Rear High Right -->
+              <rect x="694" y="100" width="12" height="210" fill="#334155" rx="1"/>
+
+              <!-- Low Girder (Front Perimeter Beam) -->
+              <polygon points="214,230 616,230 616,242 214,242" fill="var(--global-theme-color)"/>
+
+              <!-- High Girder (Rear Perimeter Beam) -->
+              <polygon points="324,100 706,100 706,112 324,112" fill="var(--global-theme-color)"/>
+
+              <!-- Knee Braces (45 deg, ab = 2.5 ft) -->
+              <line x1="220" y1="280" x2="270" y2="236" stroke="#0284c7" stroke-width="6" stroke-linecap="round"/>
+              <line x1="610" y1="280" x2="560" y2="236" stroke="#0284c7" stroke-width="6" stroke-linecap="round"/>
+              <line x1="330" y1="160" x2="380" y2="106" stroke="#0284c7" stroke-width="6" stroke-linecap="round"/>
+              <line x1="700" y1="160" x2="650" y2="106" stroke="#0284c7" stroke-width="6" stroke-linecap="round"/>
+
+              <!-- Roof Surface / Sloped Rafter Plane -->
+              <polygon points="210,230 620,230 710,100 320,100" fill="url(#roofGrad)" stroke="var(--global-theme-color)" stroke-width="2"/>
+
+              <!-- Intermediate Rafters -->
+              <line x1="290" y1="230" x2="398" y2="100" stroke="var(--global-text-color)" stroke-width="2.5"/>
+              <line x1="370" y1="230" x2="476" y2="100" stroke="var(--global-text-color)" stroke-width="2.5"/>
+              <line x1="450" y1="230" x2="554" y2="100" stroke="var(--global-text-color)" stroke-width="2.5"/>
+              <line x1="530" y1="230" x2="632" y2="100" stroke="var(--global-text-color)" stroke-width="2.5"/>
+
+              <!-- Solar Rails (Perpendicular to Rafters) -->
+              <line x1="225" y1="210" x2="635" y2="210" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,2"/>
+              <line x1="250" y1="175" x2="660" y2="175" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,2"/>
+              <line x1="275" y1="140" x2="685" y2="140" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,2"/>
+
+              <!-- Dimension Annotations -->
+              <!-- W Depth (Slope Span) -->
+              <line x1="170" y1="230" x2="280" y2="100" stroke="var(--global-theme-color)" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+              <text x="180" y="160" font-family="JetBrains Mono" font-size="12" fill="var(--global-theme-color)" font-weight="600">W (Depth / Rafter Span: 12-20 ft)</text>
+
+              <!-- L Width (Girder Span / Post Spacing) -->
+              <line x1="220" y1="255" x2="610" y2="255" stroke="var(--global-theme-color)" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+              <text x="415" y="275" font-family="JetBrains Mono" font-size="12" fill="var(--global-theme-color)" font-weight="600" text-anchor="middle">L (Post Spacing / Girder Span: 16-24 ft)</text>
+
+              <!-- Height Annotations -->
+              <!-- Clear Height -->
+              <line x1="190" y1="390" x2="190" y2="230" stroke="var(--global-text-color-light)" stroke-width="1.2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+              <text x="130" y="315" font-family="JetBrains Mono" font-size="11" fill="var(--global-text-color-light)">Clear Ht: 8.0 ft</text>
+
+              <!-- Apex Height -->
+              <line x1="740" y1="390" x2="740" y2="100" stroke="#b91c1c" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+              <text x="750" y="245" font-family="JetBrains Mono" font-size="12" fill="#b91c1c" font-weight="600">Apex Height (&le; 15.0 ft Limit)</text>
+
+              <!-- 15 ft Zoning Ceiling Line -->
+              <line x1="100" y1="120" x2="800" y2="120" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="4,4"/>
+              <text x="450" y="115" font-family="JetBrains Mono" font-size="11" fill="#b91c1c" text-anchor="middle">SLC §21A.40.050 Accessory Structure Ceiling: 15.0 ft</text>
+
+              <!-- Key Components Legend -->
+              <g transform="translate(50, 40)">
+                <rect x="0" y="0" width="14" height="8" fill="var(--global-theme-color)"/>
+                <text x="22" y="8" font-family="Inter" font-size="12" fill="var(--global-text-color)">Girders (Perimeter Beams)</text>
+                <line x1="0" y1="22" x2="14" y2="22" stroke="var(--global-text-color)" stroke-width="2.5"/>
+                <text x="22" y="25" font-family="Inter" font-size="12" fill="var(--global-text-color)">Rafters (W-Shape / HSS)</text>
+                <line x1="0" y1="38" x2="14" y2="38" stroke="#0284c7" stroke-width="4"/>
+                <text x="22" y="42" font-family="Inter" font-size="12" fill="var(--global-text-color)">Knee Braces (ab = 2.5 ft)</text>
+                <line x1="0" y1="54" x2="14" y2="54" stroke="#f59e0b" stroke-width="2" stroke-dasharray="3,1"/>
+                <text x="22" y="58" font-family="Inter" font-size="12" fill="var(--global-text-color)">IronRidge XR Rails</text>
+              </g>
+            </svg>
+            <div class="diagram-caption">
+              Figure 1.1: 3D structural schematic of freestanding 4-post steel solar pergola showing coordinate axes, primary framing members, knee-braced connections, drilled pier depths, and the 15-foot Salt Lake City zoning ceiling.
+            </div>
+          </div>
+
+          <h2>Framing Mechanics Breakthrough: Cantilever vs. Knee-Braced</h2>
+          <p>
+            A core insight from the computational engine is the dramatic divergence in material qualification and foundation costs
+            between two structural frame topologies:
+          </p>
+
+          <div class="callout callout-info">
+            <strong class="callout-title">Structural Mode Comparison:</strong>
+            <p>
+              <strong>1. Unbraced Cantilever Column (Flagpole Mode):</strong> In this mode, the pergola uprights are modeled as pure
+              flagpole columns ($R = 1.25, K = 2.1$). All lateral seismic base shears and aerodynamic wind overturning moments must be
+              resisted by flexural cantilever bending of the post and transferred as an extreme overturning moment into the drilled pier.
+              Because the column is completely unbraced over its entire height, standard American Standard Beams (S-shapes)
+              <strong>fail AISC slenderness checks ($KL/r_y > 300$)</strong> and cannot be used. Furthermore, IBC 2024 Formula 18-1 requires
+              drilled piers to reach <strong>8.6 to 14.3 ft in embedment depth</strong>.
+            </p>
+            <p style="margin-bottom: 0;">
+              <strong>2. Knee-Braced Frame Mode ($a_b = 2.5\text{ ft}$):</strong> Introducing diagonal 45&deg; knee braces between the column
+              and girder drops the effective unbraced column buckling length to $KL = 1.0 \times (H_{col} - a_b)$. Crucially, the knee
+              brace forms a closed triangulated couple at the top of the frame, taking the overturning moment and converting base reactions
+              into pure axial and shear forces (pinned base). Consequently:
+            </p>
+            <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+              <li><strong>S-shapes fully qualify:</strong> Lightweight S4x7.7 to S8x18.4 beams satisfy all AISC compression and interaction limits.</li>
+              <li><strong>Pier depths drop 60%:</strong> Concrete pier embedment plunges to <strong>3.4 to 5.5 ft</strong>, just clearing local frost depth ($30\text{ in} + 6\text{ in}$).</li>
+              <li><strong>Cost savings:</strong> Eliminates deep auger drilling rigs, cased boring, and hundreds of pounds of unnecessary concrete.</li>
+            </ul>
+          </div>
+
+          <h2>Computational Architecture & Pipeline</h2>
+          <p>
+            The engine is organized into modular R scripts without circular dependencies, enabling repeatable parametric batch runs,
+            geotechnical iterations, and integration with downstream CAD/BIM tools:
+          </p>
+          <pre><code>├── solar_pergola_engine.R   # Central core: AISC 360-22 sections, ASCE 7-22 wind/snow, IBC pier sizing
+├── solar_pergola_sizing.R   # Full matrix solver for standard S (12x16), M (16x20), L (20x24) footprints
+├── max_post_spacing.R       # Upright spacing limit solver for S-shapes and Square HSS tubes
+├── hss6x2_beam.R            # Custom thin-wall numerical integration for HSS 6x2 perimeter girders
+└── max_span_v2.R            # Parametric clear span optimizer, steel weight estimator & cost model</code></pre>
+        </div>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- TAB 2: CODES & LOAD ENVELOPE                                   -->
+      <!-- ============================================================== -->
+      <div id="loads" class="tab-content" role="tabpanel">
+        <div class="content">
+          <h2>Governing Building Codes & Standards</h2>
+          <p>
+            Residential solar pergolas in Salt Lake City reside at the intersection of several structural and regulatory codes:
+          </p>
+          <ul>
+            <li><strong>2024 International Building Code (IBC):</strong> Chapter 16 (Structural Design) and Chapter 18 (Soils & Foundations, §1807.3.2.1 Formula 18-1 for embedment depth of unrestrained poles).</li>
+            <li><strong>ASCE 7-22:</strong> Minimum Design Loads and Associated Criteria for Buildings and Other Structures (Chapter 7 Snow Loads, Chapter 12 Seismic Design, and Chapter 27/30 Wind Loads for Monoslope Open Roofs).</li>
+            <li><strong>AISC 360-22:</strong> Specification for Structural Steel Buildings (Chapters E, F, G, and H for axial, flexural, shear, and combined stress limits).</li>
+            <li><strong>Aluminum Design Manual (ADM 2020):</strong> Structural specifications for extruded 6005-T5/T61 aluminum mounting rails (IronRidge XR series).</li>
+            <li><strong>Utah Code Title 15A Chapter 3 §107:</strong> State-specific amendments calibrating Wasatch Front snow curves and seismic-snow co-loading factors.</li>
+            <li><strong>Salt Lake City Code §21A.40.050:</strong> Municipal zoning ordinance restricting detached residential accessory structures to a maximum total height of 15.0 feet.</li>
+          </ul>
+
+          <h2>Elevation-Harmonized Snow Loads (Utah Code §15A-3-107)</h2>
+          <p>
+            Standard building codes specify flat regional snow baselines. However, because Salt Lake County features steep topographical
+            gradients, Utah adopts the Utah State University (USU) Snow Study model. The ground snow load ($P_g$) is non-linear with
+            elevation:
+          </p>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Elevation Zone</th>
+                  <th>MSL Elevation (ft)</th>
+                  <th>Ground Snow Pg (psf)</th>
+                  <th>Flat Roof Pf, Strength (psf)</th>
+                  <th>Flat Roof Pf, ASD (psf)</th>
+                  <th>Seismic Co-Load Coeff.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Valley Floor (SLC Base)</strong></td>
+                  <td class="mono">4,239</td>
+                  <td class="mono">28.0</td>
+                  <td class="mono">23.5</td>
+                  <td class="mono">16.5</td>
+                  <td class="mono">0.000</td>
+                </tr>
+                <tr>
+                  <td><strong>Lower Bench</strong></td>
+                  <td class="mono">4,500</td>
+                  <td class="mono">35.0</td>
+                  <td class="mono">29.4</td>
+                  <td class="mono">20.6</td>
+                  <td class="mono">0.000</td>
+                </tr>
+                <tr>
+                  <td><strong>Mid-Bench</strong></td>
+                  <td class="mono">5,000</td>
+                  <td class="mono">60.0</td>
+                  <td class="mono">50.4</td>
+                  <td class="mono">35.3</td>
+                  <td class="mono">0.150</td>
+                </tr>
+                <tr style="background-color: color-mix(in srgb, var(--global-theme-color) 8%, transparent);">
+                  <td><strong>East Bench (ZIP 84108 Study Site)</strong></td>
+                  <td class="mono"><strong>5,500</strong></td>
+                  <td class="mono"><strong>90.1</strong></td>
+                  <td class="mono"><strong>75.7</strong></td>
+                  <td class="mono"><strong>53.0</strong></td>
+                  <td class="mono"><strong>0.158</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Upper Foothills</strong></td>
+                  <td class="mono">5,884</td>
+                  <td class="mono">95.0</td>
+                  <td class="mono">79.8</td>
+                  <td class="mono">55.9</td>
+                  <td class="mono">0.164</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Seismic-Snow Co-Loading</h3>
+          <p>
+            Under national ASCE 7-22 provisions, open roofs typically apply a flat $0.20$ co-load factor to flat roof snow when calculating
+            effective seismic weight ($W$). Utah Code §15A-3-107 replaces this with a continuous elevation equation whenever $P_f > 30\text{ psf}$:
+          </p>
+          <div class="callout callout-info" style="text-align: center;">
+            <p style="font-size: 1.15rem; font-family: 'JetBrains Mono', monospace; margin: 0;">
+              S<sub>seis</sub> = [0.15 + 0.016 &times; (A - 5)] &times; P<sub>roof</sub> &nbsp;&nbsp;&nbsp;&nbsp; (where A = elevation in kft)
+            </p>
+          </div>
+          <p>
+            At our $5,500\text{ ft}$ design elevation, $S_{seis} = 0.158 \times 75.7 = 12.0\text{ psf}$. This elevation-harmonized load
+            is dynamically combined with dead loads during lateral equivalent lateral force (ELF) seismic modeling.
+          </p>
+
+          <h2>ASCE 7-22 Wind Load Dynamics for Monoslope Free Roofs</h2>
+          <p>
+            Open-air solar pergolas are classified under ASCE 7-22 as <strong>monoslope free roofs (clear flow)</strong>. Unlike enclosed
+            buildings, wind flows both over and under the roof canopy, producing net aerodynamic normal pressure coefficients ($C_N$) that
+            switch rapidly between heavy downward pitch forces and violent upward suction:
+          </p>
+          <ul>
+            <li><strong>Velocity Pressure ($q_h$):</strong> Evaluated at mean canopy height ($h = 10.5\text{--}15.0\text{ ft}$) with $V = 115\text{ mph}$, Exposure C, $K_z = 0.85$, $K_{zt} = 1.0$, $K_d = 0.85$, giving $q_h = 24.5\text{--}25.0\text{ psf}$.</li>
+            <li><strong>Main Wind-Force Resisting System (MWFRS):</strong> Governed by Chapter 27 (Figure 27.3-4) across load cases A & B with wind directions $0^\circ$ and $180^\circ$.</li>
+            <li><strong>Components & Cladding (C&C):</strong> Governed by Chapter 30 (Figure 30.7-1) across localized edge zones (Zone 2) and corner zones (Zone 3).</li>
+          </ul>
+
+          <h2>The Dual Failure Gate: Module Uplift & Zoning Height</h2>
+          <p>
+            Every pergola configuration in our matrix is evaluated against two automated go/no-go gates:
+          </p>
+          <div class="stat-grid">
+            <div class="stat-card" style="border-left: 4px solid var(--global-warning-block);">
+              <span class="stat-card__label">Module Rear Uplift Gate</span>
+              <span class="stat-card__val">33.4 psf Max</span>
+              <span class="stat-card__desc">Commercial PV panels are tested to 2400 Pa (50.1 psf) with a 1.5 safety factor, setting an allowable rear suction limit of 33.4 psf.</span>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid var(--global-danger-block);">
+              <span class="stat-card__label">Zoning Height Ceiling Gate</span>
+              <span class="stat-card__val">15.0 ft Max</span>
+              <span class="stat-card__desc">Salt Lake City Code Title 21A.40.050 restricts detached residential accessory buildings to a strict 15.0-foot apex limit.</span>
+            </div>
+          </div>
+
+          <div class="callout callout-warning">
+            <strong class="callout-title">Critical Engineering Finding: Why Pitches &gt; 10&deg; Fail</strong>
+            <p>
+              As pitch increases from $7^\circ$ to $35^\circ$, aerodynamic lift coefficients ($C_N$) climb dramatically. At $15^\circ$
+              pitch, localized corner wind uplift reaches <strong>$-34.6\text{ psf}$</strong>, breaching the manufacturer's certified
+              $33.4\text{ psf}$ clamp rating. At $30^\circ$, uplift hits $-46.0\text{ psf}$, risking catastrophic panel detachment.
+              Simultaneously, the high-edge apex height on a 16-ft or 20-ft pergola reaches <strong>$15.5\text{ to }23.9\text{ ft}$</strong>,
+              violating Salt Lake City zoning. <strong>Designs must be restricted to 7&deg;&ndash;10&deg; pitch</strong> unless custom high-load
+              clamping systems and zoning height variances are approved.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- TAB 3: SYSTEM SIZING MATRIX                                    -->
+      <!-- ============================================================== -->
+      <div id="sizing" class="tab-content" role="tabpanel">
+        <div class="content">
+          <h2>Master Sizing Matrix across Standard Footprints</h2>
+          <p>
+            The engine evaluated 21 combinations of footprint sizes (Small 12x16, Medium 16x20, Large 20x24) across 7 roof pitch angles
+            ($7^\circ$ to $35^\circ$) at 5,500 ft elevation.
+          </p>
+
+          <div class="filter-bar">
+            <span style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Filter View:</span>
+            <button class="filter-btn active" data-filter="all">All Pitches (21)</button>
+            <button class="filter-btn" data-filter="COMPLIANT">Compliant Only (6)</button>
+            <button class="filter-btn" data-filter="S 12x16">Size S (12x16)</button>
+            <button class="filter-btn" data-filter="M 16x20">Size M (16x20)</button>
+            <button class="filter-btn" data-filter="L 20x24">Size L (20x24)</button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table" id="sizingTable">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  <th>Pitch</th>
+                  <th>Apex Ht (ft)</th>
+                  <th>Rafter (W)</th>
+                  <th>Rafter (HSS)</th>
+                  <th>Girder (W)</th>
+                  <th>Girder (HSS)</th>
+                  <th>Cant. Post</th>
+                  <th>Cant. Pier (ft)</th>
+                  <th>Braced Post</th>
+                  <th>Braced Pier (ft)</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated dynamically from embedded frame_sizing dataset -->
+              </tbody>
+            </table>
+          </div>
+
+          <h2>Mounting Rails & Module Pressure Checks</h2>
+          <p>
+            Mounting rails span between structural steel rafters to support portrait-oriented PV modules ($93.8" \times 44.6"$, $74.1\text{ lb}$).
+            Maximum allowable rafter spacing was calculated across IronRidge XR rails under ASD load combinations:
+          </p>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  <th>Pitch</th>
+                  <th>XR10 Max Span</th>
+                  <th>XR100 Max Span</th>
+                  <th>XR1000 Max Span</th>
+                  <th>Down Pressure (psf)</th>
+                  <th>Uplift Suction (psf)</th>
+                  <th>Module Uplift Check</th>
+                  <th>Zoning Check</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>S 12x16</strong></td>
+                  <td class="mono">7&deg;</td>
+                  <td class="mono">36 in</td>
+                  <td class="mono">52 in</td>
+                  <td class="mono">68 in</td>
+                  <td class="mono">64.0</td>
+                  <td class="mono">24.2</td>
+                  <td><span class="badge badge-success">PASSED (24.2 &le; 33.4)</span></td>
+                  <td><span class="badge badge-success">OK (11.4 &le; 15.0 ft)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>S 12x16</strong></td>
+                  <td class="mono">10&deg;</td>
+                  <td class="mono">36 in</td>
+                  <td class="mono">52 in</td>
+                  <td class="mono">68 in</td>
+                  <td class="mono">64.7</td>
+                  <td class="mono">27.9</td>
+                  <td><span class="badge badge-success">PASSED (27.9 &le; 33.4)</span></td>
+                  <td><span class="badge badge-success">OK (12.0 &le; 15.0 ft)</span></td>
+                </tr>
+                <tr style="opacity: 0.75;">
+                  <td><strong>S 12x16</strong></td>
+                  <td class="mono">15&deg;</td>
+                  <td class="mono">36 in</td>
+                  <td class="mono">52 in</td>
+                  <td class="mono">68 in</td>
+                  <td class="mono">65.1</td>
+                  <td class="mono">34.6</td>
+                  <td><span class="badge badge-danger">EXCEEDED (34.6 &gt; 33.4)</span></td>
+                  <td><span class="badge badge-success">OK (13.1 &le; 15.0 ft)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>M 16x20</strong></td>
+                  <td class="mono">7&deg;</td>
+                  <td class="mono">36 in</td>
+                  <td class="mono">52 in</td>
+                  <td class="mono">68 in</td>
+                  <td class="mono">64.0</td>
+                  <td class="mono">24.2</td>
+                  <td><span class="badge badge-success">PASSED (24.2 &le; 33.4)</span></td>
+                  <td><span class="badge badge-success">OK (11.9 &le; 15.0 ft)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>M 16x20</strong></td>
+                  <td class="mono">10&deg;</td>
+                  <td class="mono">36 in</td>
+                  <td class="mono">52 in</td>
+                  <td class="mono">68 in</td>
+                  <td class="mono">64.7</td>
+                  <td class="mono">27.9</td>
+                  <td><span class="badge badge-success">PASSED (27.9 &le; 33.4)</span></td>
+                  <td><span class="badge badge-success">OK (12.7 &le; 15.0 ft)</span></td>
+                </tr>
+                <tr style="opacity: 0.75;">
+                  <td><strong>M 16x20</strong></td>
+                  <td class="mono">20&deg;</td>
+                  <td class="mono">36 in</td>
+                  <td class="mono">52 in</td>
+                  <td class="mono">68 in</td>
+                  <td class="mono">63.6</td>
+                  <td class="mono">38.4</td>
+                  <td><span class="badge badge-danger">EXCEEDED (38.4 &gt; 33.4)</span></td>
+                  <td><span class="badge badge-danger">EXCEEDED (15.7 &gt; 15.0 ft)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>L 20x24</strong></td>
+                  <td class="mono">7&deg;</td>
+                  <td class="mono">36 in</td>
+                  <td class="mono">52 in</td>
+                  <td class="mono">68 in</td>
+                  <td class="mono">64.0</td>
+                  <td class="mono">24.2</td>
+                  <td><span class="badge badge-success">PASSED (24.2 &le; 33.4)</span></td>
+                  <td><span class="badge badge-success">OK (12.4 &le; 15.0 ft)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>L 20x24</strong></td>
+                  <td class="mono">10&deg;</td>
+                  <td class="mono">36 in</td>
+                  <td class="mono">52 in</td>
+                  <td class="mono">68 in</td>
+                  <td class="mono">64.7</td>
+                  <td class="mono">27.9</td>
+                  <td><span class="badge badge-success">PASSED (27.9 &le; 33.4)</span></td>
+                  <td><span class="badge badge-success">OK (13.4 &le; 15.0 ft)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-success">
+            <strong class="callout-title">Rail Selection Recommendation:</strong>
+            Standard residential rafter spacing of <strong>36 to 48 inches (3.0 to 4.0 ft)</strong> is easily satisfied by
+            <strong>IronRidge XR100</strong> rails (52" max allowable span) or <strong>XR1000</strong> heavy-duty rails (68" max span).
+            Lightweight XR10 is limited to 36-inch spans and should only be used if rafters are spaced at 3.0 ft on center.
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- TAB 4: SPAN & SECTION OPTIMIZATION                             -->
+      <!-- ============================================================== -->
+      <div id="optimization" class="tab-content" role="tabpanel">
+        <div class="content">
+          <h2>Clear Span Limits for Primary Girders</h2>
+          <p>
+            The maximum horizontal distance between posts ($L$) is governed by flexure (LRFD combination $1.2D + 1.0S + 0.5W$),
+            lateral torsional buckling (LTB), and serviceability live snow deflection limits ($L/180$). Below are clear span limits
+            for a 12-ft slope depth ($W=12\text{ ft}$) at $7^\circ$ pitch:
+          </p>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Section Type</th>
+                  <th>Steel Shape</th>
+                  <th>Weight (lb/ft)</th>
+                  <th>Max Clear Span (ft)</th>
+                  <th>Governing Failure Mode</th>
+                  <th>Apex Ht (ft)</th>
+                  <th>Zoning Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>American Standard Beam</strong></td>
+                  <td class="mono">S4x7.7</td>
+                  <td class="mono">7.7</td>
+                  <td class="mono">11.0</td>
+                  <td>Flexure / Deflection</td>
+                  <td class="mono">11.4</td>
+                  <td><span class="badge badge-success">COMPLIANT</span></td>
+                </tr>
+                <tr>
+                  <td><strong>American Standard Beam</strong></td>
+                  <td class="mono">S6x12.5</td>
+                  <td class="mono">12.5</td>
+                  <td class="mono">17.5</td>
+                  <td>Flexure</td>
+                  <td class="mono">11.4</td>
+                  <td><span class="badge badge-success">COMPLIANT</span></td>
+                </tr>
+                <tr>
+                  <td><strong>American Standard Beam</strong></td>
+                  <td class="mono">S8x18.4</td>
+                  <td class="mono">18.4</td>
+                  <td class="mono">24.0</td>
+                  <td>Flexure</td>
+                  <td class="mono">11.4</td>
+                  <td><span class="badge badge-success">COMPLIANT</span></td>
+                </tr>
+                <tr style="background-color: color-mix(in srgb, var(--global-theme-color) 8%, transparent);">
+                  <td><strong>Rectangular Tube (Custom)</strong></td>
+                  <td class="mono"><strong>HSS6x2x1/8</strong></td>
+                  <td class="mono"><strong>6.05</strong></td>
+                  <td class="mono"><strong>12.0</strong></td>
+                  <td>LTB / Deflection</td>
+                  <td class="mono">11.4</td>
+                  <td><span class="badge badge-success">COMPLIANT</span></td>
+                </tr>
+                <tr style="background-color: color-mix(in srgb, var(--global-theme-color) 8%, transparent);">
+                  <td><strong>Rectangular Tube (Custom)</strong></td>
+                  <td class="mono"><strong>HSS6x2x1/4</strong></td>
+                  <td class="mono"><strong>11.48</strong></td>
+                  <td class="mono"><strong>15.0</strong></td>
+                  <td>LTB / Deflection</td>
+                  <td class="mono">11.4</td>
+                  <td><span class="badge badge-success">COMPLIANT</span></td>
+                </tr>
+                <tr style="background-color: color-mix(in srgb, var(--global-theme-color) 8%, transparent);">
+                  <td><strong>Rectangular Tube (Custom)</strong></td>
+                  <td class="mono"><strong>HSS6x2x3/8</strong></td>
+                  <td class="mono"><strong>16.27</strong></td>
+                  <td class="mono"><strong>16.5</strong></td>
+                  <td>Flexure</td>
+                  <td class="mono">11.4</td>
+                  <td><span class="badge badge-success">COMPLIANT</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Square Tube</strong></td>
+                  <td class="mono">HSS4x4x3/16</td>
+                  <td class="mono">9.42</td>
+                  <td class="mono">11.5</td>
+                  <td>Deflection ($L/180$)</td>
+                  <td class="mono">11.4</td>
+                  <td><span class="badge badge-success">COMPLIANT</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Square Tube</strong></td>
+                  <td class="mono">HSS5x5x1/4</td>
+                  <td class="mono">15.62</td>
+                  <td class="mono">16.0</td>
+                  <td>Deflection / Flexure</td>
+                  <td class="mono">11.4</td>
+                  <td><span class="badge badge-success">COMPLIANT</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Square Tube</strong></td>
+                  <td class="mono">HSS6x6x1/4</td>
+                  <td class="mono">19.02</td>
+                  <td class="mono">19.5</td>
+                  <td>Flexure</td>
+                  <td class="mono">11.4</td>
+                  <td><span class="badge badge-success">COMPLIANT</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Square Tube</strong></td>
+                  <td class="mono">HSS8x8x1/4</td>
+                  <td class="mono">25.82</td>
+                  <td class="mono">26.5</td>
+                  <td>Flexure</td>
+                  <td class="mono">11.4</td>
+                  <td><span class="badge badge-success">COMPLIANT</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>Custom Rectangular HSS 6x2 Cross-Section Analysis</h2>
+          <p>
+            Architects frequently request thin, sleek rectangular profiles for residential pergola perimeters. The engine integrates
+            exact corner radii ($r_o = 2t, r_i = t$) across 1,200 numerical slices to evaluate exact cross-sectional properties and
+            AISC 360-22 Section F7 Lateral Torsional Buckling (LTB) limits:
+          </p>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Nominal Profile</th>
+                  <th>Wall t (in)</th>
+                  <th>Weight (plf)</th>
+                  <th>Area A (in&sup2;)</th>
+                  <th>Ix (in&sup4;)</th>
+                  <th>Sx (in&sup3;)</th>
+                  <th>Zx (in&sup3;)</th>
+                  <th>Weak Radius ry (in)</th>
+                  <th>Torsion J (in&sup4;)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="mono"><strong>HSS6x2x1/8</strong></td>
+                  <td class="mono">0.116</td>
+                  <td class="mono">6.05</td>
+                  <td class="mono">1.78</td>
+                  <td class="mono">7.53</td>
+                  <td class="mono">2.51</td>
+                  <td class="mono">3.23</td>
+                  <td class="mono">0.861</td>
+                  <td class="mono">3.67</td>
+                </tr>
+                <tr>
+                  <td class="mono"><strong>HSS6x2x3/16</strong></td>
+                  <td class="mono">0.174</td>
+                  <td class="mono">8.80</td>
+                  <td class="mono">2.59</td>
+                  <td class="mono">10.49</td>
+                  <td class="mono">3.50</td>
+                  <td class="mono">4.58</td>
+                  <td class="mono">0.837</td>
+                  <td class="mono">5.15</td>
+                </tr>
+                <tr>
+                  <td class="mono"><strong>HSS6x2x1/4</strong></td>
+                  <td class="mono">0.233</td>
+                  <td class="mono">11.48</td>
+                  <td class="mono">3.38</td>
+                  <td class="mono">13.15</td>
+                  <td class="mono">4.38</td>
+                  <td class="mono">5.86</td>
+                  <td class="mono">0.810</td>
+                  <td class="mono">6.42</td>
+                </tr>
+                <tr>
+                  <td class="mono"><strong>HSS6x2x5/16</strong></td>
+                  <td class="mono">0.291</td>
+                  <td class="mono">13.96</td>
+                  <td class="mono">4.11</td>
+                  <td class="mono">15.37</td>
+                  <td class="mono">5.12</td>
+                  <td class="mono">6.97</td>
+                  <td class="mono">0.785</td>
+                  <td class="mono">7.47</td>
+                </tr>
+                <tr>
+                  <td class="mono"><strong>HSS6x2x3/8</strong></td>
+                  <td class="mono">0.349</td>
+                  <td class="mono">16.27</td>
+                  <td class="mono">4.78</td>
+                  <td class="mono">17.14</td>
+                  <td class="mono">5.71</td>
+                  <td class="mono">7.93</td>
+                  <td class="mono">0.760</td>
+                  <td class="mono">8.32</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>Parametric Steel Weight & Cost Estimation</h2>
+          <p>
+            Using <code>max_span_v2.R</code>, total framework steel weight was compiled for 4-post frames across beam profiles.
+            Raw structural steel costs are modeled at low ($0.75/lb), mid ($1.00/lb), and high ($1.25/lb) commodity rates:
+          </p>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <span class="stat-card__label">Minimal Frame (11 ft span)</span>
+              <span class="stat-card__val">734 lb</span>
+              <span class="stat-card__desc">HSS 6x2x1/8 with HSS 4x4 posts. Estimated steel cost: $734 ($550–$918).</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Medium Frame (16 ft span)</span>
+              <span class="stat-card__val">1,320 lb</span>
+              <span class="stat-card__desc">HSS 5x5x1/4 with HSS 4x4 posts. Estimated steel cost: $1,320 ($990–$1,650).</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Large Frame (24 ft span)</span>
+              <span class="stat-card__val">2,689 lb</span>
+              <span class="stat-card__desc">HSS 8x8x1/4 with HSS 6x6 posts. Estimated steel cost: $2,689 ($2,017–$3,361).</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- TAB 5: INTERACTIVE PERGOLA SIZER                               -->
+      <!-- ============================================================== -->
+      <div id="calculator" class="tab-content" role="tabpanel">
+        <div class="content">
+          <h2>Interactive Pergola Sizer & Compliance Calculator</h2>
+          <p>
+            Select your pergola dimensions, elevation, and framing style to compute real-time structural sizing, apex height,
+            building code compliance status, and drilled pier foundation requirements:
+          </p>
+
+          <div class="calc-grid">
+            <!-- Controls Form -->
+            <div class="calc-controls">
+              <h3 style="margin-top: 0; font-size: 1.15rem;">Pergola Parameters</h3>
+
+              <div class="calc-group">
+                <label for="calc-depth">
+                  Roof Depth W (Slope Span): <span class="val" id="disp-depth">16 ft</span>
+                </label>
+                <select id="calc-depth">
+                  <option value="12">12 ft (Small Patio)</option>
+                  <option value="16" selected>16 ft (Medium Standard)</option>
+                  <option value="20">20 ft (Large Double-Bay)</option>
+                </select>
+              </div>
+
+              <div class="calc-group">
+                <label for="calc-span">
+                  Post Spacing L (Girder Span): <span class="val" id="disp-span">20 ft</span>
+                </label>
+                <input type="range" id="calc-span" min="12" max="24" step="2" value="20" />
+              </div>
+
+              <div class="calc-group">
+                <label for="calc-pitch">
+                  Roof Pitch (&theta;): <span class="val" id="disp-pitch">7&deg; (1.5:12)</span>
+                </label>
+                <select id="calc-pitch">
+                  <option value="7" selected>7&deg; (Recommended - Compliant)</option>
+                  <option value="10">10&deg; (Recommended - Compliant)</option>
+                  <option value="15">15&deg; (Uplift Limit Failure)</option>
+                  <option value="20">20&deg; (Zoning & Uplift Failure)</option>
+                  <option value="25">25&deg; (Zoning & Uplift Failure)</option>
+                  <option value="30">30&deg; (Zoning & Uplift Failure)</option>
+                  <option value="35">35&deg; (Severe Failure)</option>
+                </select>
+              </div>
+
+              <div class="calc-group">
+                <label for="calc-elev">Site Elevation (Wasatch Front):</label>
+                <select id="calc-elev">
+                  <option value="4300">4,300 ft (SLC Valley Floor - Pg 28 psf)</option>
+                  <option value="5500" selected>5,500 ft (East Bench ZIP 84108 - Pg 90 psf)</option>
+                </select>
+              </div>
+
+              <div class="calc-group">
+                <label for="calc-mode">Structural Framing Topology:</label>
+                <select id="calc-mode">
+                  <option value="braced" selected>Knee-Braced Frame (ab = 2.5 ft) - Recommended</option>
+                  <option value="cant">Unbraced Cantilever (Flagpole Base)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Results Output Card -->
+            <div class="calc-results">
+              <div class="calc-res-header">
+                <h4>Engineering Evaluation</h4>
+                <span id="res-badge" class="badge badge-success">COMPLIANT</span>
+              </div>
+
+              <div class="calc-item">
+                <span class="lbl">Total Apex Height:</span>
+                <span class="val" id="res-apex">11.9 ft</span>
+              </div>
+              <div class="calc-item">
+                <span class="lbl">SLC 15-ft Zoning Margin:</span>
+                <span class="val" id="res-zoning-margin">+3.1 ft (Passed)</span>
+              </div>
+              <div class="calc-item">
+                <span class="lbl">Design Roof Snow (Pf):</span>
+                <span class="val" id="res-snow">75.7 psf</span>
+              </div>
+              <div class="calc-item">
+                <span class="lbl">Peak Wind Uplift Suction:</span>
+                <span class="val" id="res-uplift">24.2 psf (Passed &le; 33.4)</span>
+              </div>
+              <div class="calc-item">
+                <span class="lbl">Recommended Rafter:</span>
+                <span class="val" id="res-rafter">W6x9 or HSS4x4x1/4</span>
+              </div>
+              <div class="calc-item">
+                <span class="lbl">Recommended Girder:</span>
+                <span class="val" id="res-girder">W10x12 or HSS8x8x1/4</span>
+              </div>
+              <div class="calc-item">
+                <span class="lbl">Recommended Upright Post:</span>
+                <span class="val" id="res-post">HSS4x4x3/16 or S4x7.7</span>
+              </div>
+              <div class="calc-item">
+                <span class="lbl">Drilled Concrete Pier Depth:</span>
+                <span class="val" id="res-pier">4.3 ft (30" dia)</span>
+              </div>
+              <div class="calc-item">
+                <span class="lbl">Total Steel Weight / Cost:</span>
+                <span class="val" id="res-steel">~1,580 lb ($1,580 mid)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- TAB 6: PERMITTING ROADMAP & RECOMMENDATIONS                    -->
+      <!-- ============================================================== -->
+      <div id="permitting" class="tab-content" role="tabpanel">
+        <div class="content">
+          <h2>Salt Lake City Permitting Roadmap</h2>
+          <p>
+            To permit a detached freestanding steel solar pergola in Salt Lake City (or surrounding Salt Lake County jurisdictions),
+            the permit application packet must include the following submittals:
+          </p>
+
+          <div class="callout callout-info">
+            <strong class="callout-title">Required Permitting Package Checklist:</strong>
+            <ol style="margin-top: 0.5rem; margin-bottom: 0;">
+              <li><strong>Site Plan (Zoning Review):</strong> Dimensioned property boundary showing setbacks (minimum 1.0 to 5.0 ft from side/rear property lines per SLC §21A.40.050), existing primary dwelling, and pergola roof outline.</li>
+              <li><strong>Utah PE-Stamped Structural Calculations:</strong> Comprehensive calc package certifying compliance with 2024 IBC, ASCE 7-22 wind/snow, and AISC 360-22 steel capacities.</li>
+              <li><strong>Foundation & Framing Plan:</strong> Detailed layout of drilled concrete piers (diameter, embedment depth, rebar cage schedule, and anchor bolt pattern).</li>
+              <li><strong>Electrical Single-Line Diagram:</strong> Inverter specification, PV module string sizing, conduit runs, rapid shutdown compliance (NEC 2023 Article 690), and utility interconnection agreement with Rocky Mountain Power.</li>
+            </ol>
+          </div>
+
+          <h2>Key Engineering Recommendations</h2>
+          <ul>
+            <li>
+              <strong>Lock Roof Pitch Between 7&deg; and 10&deg;:</strong> This pitch provides sufficient water run-off and snow shed
+              while guaranteeing that total structure apex height remains safely under the 15.0-foot zoning limit. Furthermore,
+              it prevents corner wind suction from exceeding the standard 33.4 psf commercial module clamp limit.
+            </li>
+            <li>
+              <strong>Mandate Knee Bracing ($a_b = 2.5\text{ ft}$):</strong> As demonstrated by our engine, unbraced cantilever columns
+              require 10–14 ft deep piers and eliminate economical S-shapes. Adding diagonal 2.5-ft knee braces cuts pier excavation by
+              60% and unlocks lighter, cheaper steel sections.
+            </li>
+            <li>
+              <strong>Frost Depth & Soil Bearing:</strong> All piers must extend to a minimum depth of 36 inches ($30\text{ in}$ frost depth
+              plus $6\text{ in}$ safety margin). Design assumes an allowable lateral passive soil resistance of $S_{lat} = 100\text{ psf/ft}$
+              and vertical bearing of $1,500\text{ psf}$ per 2024 IBC Table 1806.2. If soft clay or uncompacted fill is encountered, a
+              site-specific geotechnical report must calibrate soil parameters.
+            </li>
+            <li>
+              <strong>Corrosion Protection:</strong> All steel framing members should be specified with either hot-dip galvanization
+              (ASTM A123) or a high-performance marine-grade polyester powder coat over zinc-rich primer to resist winter road-salt aerosols
+              and high UV exposure along the Wasatch Front.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Site Footer matching al-folio and multifunction-solar-utah -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="container" style="padding-bottom: 0;">
+        <p>&copy; Copyright 2026 David M. Henke. Freestanding Solar Pergola Engineering Engine.</p>
+        <p>
+          <a href="https://dmhenke.github.io/davidhenke2.github.io/">About David Henke</a> &bull;
+          <a href="https://dmhenke.github.io/davidhenke2.github.io/projects/">Projects</a> &bull;
+          <a href="https://github.com/dmhenke/SolarPergola">GitHub Repository</a>
+        </p>
+      </div>
+    </footer>
+
+    <!-- Interactive Logic & Data Script -->
+    <script>
+      // Embedded frame_sizing dataset generated from solar_pergola_engine.R
+      var frameData = [
+        {size:"S 12x16", pitch:7, rise:1.5, top_ht:11.4, zoning_ok:true, mod_rear_ok:true, status:"COMPLIANT", ps:75.7, qh:24.5, raf_w:"S4x7.7", raf_hss:"HSS4x4x3/16", gir_w:"W6x9", gir_hss:"HSS5x5x1/4", col_cant:"HSS4x4x1/4", pier_cant:8.6, col_braced:"HSS4x4x3/16", col_braced_s:"S4x7.7", pier_braced:3.4, pier_dia:24},
+        {size:"S 12x16", pitch:10, rise:2.1, top_ht:12.0, zoning_ok:true, mod_rear_ok:true, status:"COMPLIANT", ps:75.7, qh:24.5, raf_w:"S4x7.7", raf_hss:"HSS4x4x3/16", gir_w:"W6x9", gir_hss:"HSS5x5x1/4", col_cant:"HSS4x4x5/16", pier_cant:8.7, col_braced:"HSS4x4x3/16", col_braced_s:"S4x7.7", pier_braced:3.4, pier_dia:24},
+        {size:"S 12x16", pitch:15, rise:3.2, top_ht:13.1, zoning_ok:true, mod_rear_ok:false, status:"FAIL: MODULE_UPLIFT", ps:75.7, qh:24.5, raf_w:"S4x7.7", raf_hss:"HSS4x4x3/16", gir_w:"W6x9", gir_hss:"HSS5x5x1/4", col_cant:"HSS5x5x1/4", pier_cant:8.9, col_braced:"HSS4x4x3/16", col_braced_s:"S4x7.7", pier_braced:3.9, pier_dia:24},
+        {size:"S 12x16", pitch:20, rise:4.4, top_ht:14.3, zoning_ok:true, mod_rear_ok:false, status:"FAIL: MODULE_UPLIFT", ps:68.8, qh:24.5, raf_w:"S4x7.7", raf_hss:"HSS4x4x3/16", gir_w:"W6x9", gir_hss:"HSS5x5x1/4", col_cant:"HSS5x5x1/4", pier_cant:9.1, col_braced:"HSS4x4x3/16", col_braced_s:"S4x7.7", pier_braced:4.5, pier_dia:24},
+        {size:"S 12x16", pitch:25, rise:5.6, top_ht:15.5, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:61.9, qh:24.5, raf_w:"S4x7.7", raf_hss:"HSS4x4x3/16", gir_w:"W6x9", gir_hss:"HSS5x5x1/4", col_cant:"HSS5x5x1/4", pier_cant:9.4, col_braced:"HSS4x4x3/16", col_braced_s:"S4x7.7", pier_braced:5.1, pier_dia:24},
+        {size:"S 12x16", pitch:30, rise:6.9, top_ht:16.8, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:55.1, qh:24.5, raf_w:"S4x7.7", raf_hss:"HSS4x4x3/16", gir_w:"W6x12", gir_hss:"HSS5x5x1/4", col_cant:"HSS6x6x1/4", pier_cant:9.7, col_braced:"HSS4x4x3/16", col_braced_s:"S4x9.5", pier_braced:5.6, pier_dia:24},
+        {size:"S 12x16", pitch:35, rise:8.4, top_ht:18.3, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:48.2, qh:24.5, raf_w:"S4x7.7", raf_hss:"HSS4x4x3/16", gir_w:"W6x12", gir_hss:"HSS5x5x1/4", col_cant:"HSS6x6x1/4", pier_cant:10.0, col_braced:"HSS4x4x3/16", col_braced_s:"S5x10", pier_braced:6.1, pier_dia:24},
+
+        {size:"M 16x20", pitch:7, rise:2.0, top_ht:11.9, zoning_ok:true, mod_rear_ok:true, status:"COMPLIANT", ps:75.7, qh:24.5, raf_w:"W6x9", raf_hss:"HSS4x4x1/4", gir_w:"W10x12", gir_hss:"HSS8x8x1/4", col_cant:"HSS6x6x1/4", pier_cant:9.8, col_braced:"HSS4x4x3/16", col_braced_s:"S4x7.7", pier_braced:4.3, pier_dia:30},
+        {size:"M 16x20", pitch:10, rise:2.8, top_ht:12.7, zoning_ok:true, mod_rear_ok:true, status:"COMPLIANT", ps:75.7, qh:24.5, raf_w:"W6x9", raf_hss:"HSS4x4x1/4", gir_w:"W8x13", gir_hss:"HSS8x8x1/4", col_cant:"HSS6x6x1/4", pier_cant:10.0, col_braced:"HSS4x4x3/16", col_braced_s:"S4x7.7", pier_braced:4.4, pier_dia:30},
+        {size:"M 16x20", pitch:15, rise:4.3, top_ht:14.2, zoning_ok:true, mod_rear_ok:false, status:"FAIL: MODULE_UPLIFT", ps:75.7, qh:24.5, raf_w:"W6x9", raf_hss:"HSS4x4x1/4", gir_w:"W10x15", gir_hss:"HSS8x8x1/4", col_cant:"HSS6x6x1/4", pier_cant:10.4, col_braced:"HSS4x4x3/16", col_braced_s:"S5x10", pier_braced:4.7, pier_dia:30},
+        {size:"M 16x20", pitch:20, rise:5.8, top_ht:15.7, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:68.8, qh:24.5, raf_w:"W6x9", raf_hss:"HSS4x4x1/4", gir_w:"W8x18", gir_hss:"HSS8x8x1/4", col_cant:"HSS6x6x1/4", pier_cant:11.7, col_braced:"HSS4x4x3/16", col_braced_s:"S5x10", pier_braced:5.5, pier_dia:24},
+        {size:"M 16x20", pitch:25, rise:7.5, top_ht:17.4, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:61.9, qh:24.5, raf_w:"W6x9", raf_hss:"HSS4x4x3/16", gir_w:"W8x18", gir_hss:"HSS6x6x5/16", col_cant:"HSS6x6x5/16", pier_cant:12.0, col_braced:"HSS4x4x3/16", col_braced_s:"S6x12.5", pier_braced:6.2, pier_dia:24},
+        {size:"M 16x20", pitch:30, rise:9.2, top_ht:19.1, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:55.1, qh:24.5, raf_w:"S4x7.7", raf_hss:"HSS4x4x3/16", gir_w:"W8x18", gir_hss:"HSS6x6x5/16", col_cant:"HSS8x8x1/4", pier_cant:12.2, col_braced:"HSS4x4x3/16", col_braced_s:"S6x17.25", pier_braced:7.0, pier_dia:24},
+        {size:"M 16x20", pitch:35, rise:11.2, top_ht:21.1, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:48.2, qh:24.5, raf_w:"W6x9", raf_hss:"HSS4x4x3/16", gir_w:"W8x18", gir_hss:"HSS6x6x1/4", col_cant:"HSS8x8x1/4", pier_cant:12.6, col_braced:"HSS4x4x3/16", col_braced_s:"S8x18.4", pier_braced:7.6, pier_dia:24},
+
+        {size:"L 20x24", pitch:7, rise:2.5, top_ht:12.4, zoning_ok:true, mod_rear_ok:true, status:"COMPLIANT", ps:75.7, qh:24.5, raf_w:"W6x9", raf_hss:"HSS5x5x1/4", gir_w:"W10x19", gir_hss:"HSS8x8x5/16", col_cant:"HSS6x6x5/16", pier_cant:11.7, col_braced:"HSS4x4x3/16", col_braced_s:"S4x9.5", pier_braced:5.3, pier_dia:30},
+        {size:"L 20x24", pitch:10, rise:3.5, top_ht:13.4, zoning_ok:true, mod_rear_ok:true, status:"COMPLIANT", ps:75.7, qh:24.5, raf_w:"W6x9", raf_hss:"HSS5x5x1/4", gir_w:"W10x19", gir_hss:"HSS8x8x5/16", col_cant:"HSS6x6x5/16", pier_cant:12.0, col_braced:"HSS4x4x3/16", col_braced_s:"S5x10", pier_braced:5.3, pier_dia:30},
+        {size:"L 20x24", pitch:15, rise:5.4, top_ht:15.3, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:75.7, qh:24.5, raf_w:"W6x9", raf_hss:"HSS5x5x1/4", gir_w:"W10x22", gir_hss:"HSS8x8x5/16", col_cant:"HSS8x8x1/4", pier_cant:12.4, col_braced:"HSS4x4x3/16", col_braced_s:"S6x12.5", pier_braced:5.5, pier_dia:30},
+        {size:"L 20x24", pitch:20, rise:7.3, top_ht:17.2, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:68.8, qh:24.5, raf_w:"W6x12", raf_hss:"HSS5x5x1/4", gir_w:"W10x22", gir_hss:"HSS8x8x5/16", col_cant:"HSS8x8x1/4", pier_cant:13.0, col_braced:"HSS4x4x3/16", col_braced_s:"S6x17.25", pier_braced:6.5, pier_dia:30},
+        {size:"L 20x24", pitch:25, rise:9.3, top_ht:19.2, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:61.9, qh:24.5, raf_w:"W6x12", raf_hss:"HSS5x5x1/4", gir_w:"W10x22", gir_hss:"HSS8x8x5/16", col_cant:"HSS8x8x5/16", pier_cant:13.4, col_braced:"HSS4x4x3/16", col_braced_s:"S8x18.4", pier_braced:7.4, pier_dia:30},
+        {size:"L 20x24", pitch:30, rise:11.5, top_ht:21.4, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:55.1, qh:24.6, raf_w:"W6x12", raf_hss:"HSS5x5x1/4", gir_w:"W12x26", gir_hss:"HSS8x8x5/16", col_cant:"HSS8x8x5/16", pier_cant:13.9, col_braced:"HSS4x4x3/16", col_braced_s:"S8x18.4", pier_braced:8.2, pier_dia:30},
+        {size:"L 20x24", pitch:35, rise:14.0, top_ht:23.9, zoning_ok:false, mod_rear_ok:false, status:"FAIL: HEIGHT & UPLIFT", ps:48.2, qh:25.0, raf_w:"W6x12", raf_hss:"HSS5x5x1/4", gir_w:"W12x26", gir_hss:"HSS8x8x1/4", col_cant:"HSS10x10x5/16", pier_cant:14.3, col_braced:"HSS4x4x1/4", col_braced_s:"None", pier_braced:9.0, pier_dia:30}
+      ];
+
+      // Render Sizing Table
+      function renderTable(filter) {
+        var tbody = document.querySelector("#sizingTable tbody");
+        tbody.innerHTML = "";
+        frameData.forEach(function (row) {
+          if (filter === "COMPLIANT" && row.status !== "COMPLIANT") return;
+          if (filter === "S 12x16" && row.size !== "S 12x16") return;
+          if (filter === "M 16x20" && row.size !== "M 16x20") return;
+          if (filter === "L 20x24" && row.size !== "L 20x24") return;
+
+          var tr = document.createElement("tr");
+          var badgeClass = row.status === "COMPLIANT" ? "badge-success" : "badge-danger";
+          tr.innerHTML =
+            "<td><strong>" + row.size + "</strong></td>" +
+            "<td class='mono'>" + row.pitch + "&deg;</td>" +
+            "<td class='mono'>" + row.top_ht + "</td>" +
+            "<td class='mono'>" + row.raf_w + "</td>" +
+            "<td class='mono'>" + row.raf_hss + "</td>" +
+            "<td class='mono'>" + row.gir_w + "</td>" +
+            "<td class='mono'>" + row.gir_hss + "</td>" +
+            "<td class='mono'>" + row.col_cant + "</td>" +
+            "<td class='mono'>" + row.pier_cant + " ft</td>" +
+            "<td class='mono'>" + row.col_braced + " (" + row.col_braced_s + ")</td>" +
+            "<td class='mono'><strong>" + row.pier_braced + " ft</strong></td>" +
+            "<td><span class='badge " + badgeClass + "'>" + row.status + "</span></td>";
+          tbody.appendChild(tr);
+        });
+      }
+      renderTable("all");
+
+      // Filter Buttons Handler
+      document.querySelectorAll(".filter-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          document.querySelectorAll(".filter-btn").forEach(function (b) { b.classList.remove("active"); });
+          btn.classList.add("active");
+          renderTable(btn.getAttribute("data-filter"));
+        });
+      });
+
+      // Tabs Logic & Deep-Linking
+      document.querySelectorAll(".tab-button").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var tabName = btn.getAttribute("data-tab");
+          document.querySelectorAll(".tab-content").forEach(function (tab) { tab.classList.remove("active"); });
+          document.querySelectorAll(".tab-button").forEach(function (b) {
+            b.classList.remove("active");
+            b.setAttribute("aria-selected", "false");
+          });
+          document.getElementById(tabName).classList.add("active");
+          btn.classList.add("active");
+          btn.setAttribute("aria-selected", "true");
+        });
+      });
+
+      function openTarget(id, scroll) {
+        var el = id && document.getElementById(id);
+        if (!el) return;
+        var panel = el.classList.contains("tab-content") ? el : el.closest(".tab-content");
+        if (!panel) return;
+        var btn = document.querySelector('.tab-button[data-tab="' + panel.id + '"]');
+        if (btn && !panel.classList.contains("active")) btn.click();
+        if (scroll && el !== panel) {
+          setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 30);
+        }
+      }
+      window.addEventListener("hashchange", function () { openTarget(location.hash.slice(1), true); });
+      openTarget(location.hash.slice(1), false);
+
+      // Theme toggle: system -> light -> dark matching al-folio
+      (function () {
+        var root = document.documentElement;
+        var toggle = document.getElementById("theme-toggle");
+        var icon = document.getElementById("theme-icon");
+        var media = window.matchMedia("(prefers-color-scheme: dark)");
+        var ICONS = { system: "◑", light: "☀", dark: "☽" };
+
+        function read() {
+          try { return localStorage.getItem("theme-setting") || "system"; } catch (e) { return "system"; }
+        }
+
+        function apply(setting) {
+          var resolved = setting === "system" ? (media.matches ? "dark" : "light") : setting;
+          root.setAttribute("data-theme", resolved);
+          root.setAttribute("data-theme-setting", setting);
+          icon.textContent = ICONS[setting];
+          toggle.title = "Theme: " + setting;
+        }
+
+        apply(read());
+
+        toggle.addEventListener("click", function () {
+          var order = ["system", "light", "dark"];
+          var next = order[(order.indexOf(read()) + 1) % order.length];
+          try { localStorage.setItem("theme-setting", next); } catch (e) {}
+          apply(next);
+        });
+
+        media.addEventListener("change", function () {
+          if (read() === "system") apply("system");
+        });
+      })();
+
+      // Interactive Calculator Engine
+      function runCalc() {
+        var W = parseFloat(document.getElementById("calc-depth").value);
+        var L = parseFloat(document.getElementById("calc-span").value);
+        var pitch = parseFloat(document.getElementById("calc-pitch").value);
+        var elev = parseFloat(document.getElementById("calc-elev").value);
+        var mode = document.getElementById("calc-mode").value;
+
+        document.getElementById("disp-depth").textContent = W + " ft";
+        document.getElementById("disp-span").textContent = L + " ft";
+        document.getElementById("disp-pitch").textContent = pitch + "°";
+
+        var rad = pitch * Math.PI / 180;
+        var rise = W * Math.tan(rad);
+        var clearHt = 8.0;
+        var apexHt = clearHt + 1.9 + rise;
+
+        // Snow loads based on elevation
+        var pg = elev === 5500 ? 90.1 : 28.0;
+        var pf = elev === 5500 ? 75.7 : 23.5;
+
+        // Peak uplift suction
+        var upliftSuction = 20.0 + (pitch / 35.0) * 26.0; // psf approx from ASCE 7-22 C&C
+        var upliftOk = upliftSuction <= 33.4;
+        var zoningOk = apexHt <= 15.0;
+
+        var status = "COMPLIANT";
+        var badgeClass = "badge-success";
+        if (!upliftOk && !zoningOk) {
+          status = "FAIL: HEIGHT & UPLIFT";
+          badgeClass = "badge-danger";
+        } else if (!upliftOk) {
+          status = "FAIL: MODULE UPLIFT";
+          badgeClass = "badge-danger";
+        } else if (!zoningOk) {
+          status = "FAIL: EXCEEDS ZONING HEIGHT";
+          badgeClass = "badge-danger";
+        }
+
+        var badgeEl = document.getElementById("res-badge");
+        badgeEl.textContent = status;
+        badgeEl.className = "badge " + badgeClass;
+
+        document.getElementById("res-apex").textContent = apexHt.toFixed(1) + " ft";
+        var margin = 15.0 - apexHt;
+        document.getElementById("res-zoning-margin").textContent =
+          (margin >= 0 ? "+" : "") + margin.toFixed(1) + " ft (" + (zoningOk ? "Passed" : "Exceeded") + ")";
+        document.getElementById("res-snow").textContent = pf.toFixed(1) + " psf (Pg: " + pg.toFixed(1) + " psf)";
+        document.getElementById("res-uplift").textContent =
+          upliftSuction.toFixed(1) + " psf (" + (upliftOk ? "Passed ≤ 33.4" : "Exceeded > 33.4") + ")";
+
+        // Recommended sections
+        var rafterStr = W <= 12 ? "S4x7.7 or HSS4x4x3/16" : (W <= 16 ? "W6x9 or HSS4x4x1/4" : "W6x9 or HSS5x5x1/4");
+        var girderStr = L <= 16 ? (W <= 12 ? "W6x9 or HSS5x5x1/4" : "W10x12 or HSS8x8x1/4") : (L <= 20 ? "W8x13 or HSS8x8x1/4" : "W10x19 or HSS8x8x5/16");
+
+        var postStr = "";
+        var pierDepth = 0;
+        var pierDia = (W * L > 300) ? 30 : 24;
+
+        if (mode === "braced") {
+          postStr = "HSS4x4x3/16 (or S4x7.7 to S5x10)";
+          pierDepth = 3.2 + (W * L / 480) * 2.1 + (pitch / 35.0) * 0.8;
+          if (pierDepth < 3.4) pierDepth = 3.4;
+        } else {
+          postStr = (W * L > 300) ? "HSS6x6x1/4 to HSS8x8x1/4" : "HSS4x4x1/4 to HSS5x5x1/4";
+          pierDepth = 8.4 + (W * L / 480) * 4.5 + (pitch / 35.0) * 1.5;
+        }
+
+        document.getElementById("res-rafter").textContent = rafterStr;
+        document.getElementById("res-girder").textContent = girderStr;
+        document.getElementById("res-post").textContent = postStr;
+        document.getElementById("res-pier").textContent = pierDepth.toFixed(1) + " ft (" + pierDia + '" dia)';
+
+        // Estimated steel weight & cost
+        var area = W * L;
+        var steelWeight = Math.round(area * 4.2 + (mode === "braced" ? 220 : 650) + (L > 16 ? 400 : 0));
+        document.getElementById("res-steel").textContent =
+          "~" + steelWeight.toLocaleString() + " lb ($" + steelWeight.toLocaleString() + " mid)";
+      }
+
+      ["calc-depth", "calc-span", "calc-pitch", "calc-elev", "calc-mode"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", runCalc);
+        document.getElementById(id).addEventListener("change", runCalc);
+      });
+      runCalc();
+    </script>
+  </body>
+</html>
