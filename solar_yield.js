@@ -355,7 +355,8 @@
     var ovFt = parseFloat(($("calc-mod-overhang") || { value: 6 }).value) / 12;
     var auto = $("sy-auto").checked;
     var rows = Math.floor((W / Math.cos(pitch * Math.PI / 180) + 2 * ovFt) / MOD_LEN_FT + 1e-6);
-    var cols = Math.floor((L + 2 * ovFt) / MOD_WID_FT + 1e-6);
+    var cant = parseFloat(($("calc-cant-girder") || { value: 0 }).value) || 0;
+    var cols = Math.floor((L + 2 * cant + 2 * ovFt) / MOD_WID_FT + 1e-6);
     var nAuto = Math.max(1, rows * cols);
     var nMod = auto ? nAuto : Math.max(1, parseInt($("sy-nmod").value, 10) || 1);
     if (auto) $("sy-nmod").value = nAuto;
@@ -743,12 +744,13 @@
     ["sy-pitch", "sy-watt", "sy-loss", "sy-horizon", "sy-snow", "sy-nmod", "sy-auto"].forEach(function (id) {
       $(id).addEventListener("input", function () {
         if (id === "sy-pitch" && calcPitch) { calcPitch.value = $("sy-pitch").value; calcPitch.dispatchEvent(new Event("input")); }
+        if (id === "sy-watt" && typeof window.runCalc === "function") window.runCalc(); // keep Sizer price in step
         queue();
       });
       $(id).addEventListener("change", queue);
     });
     // Keep in sync with the Interactive Sizer
-    ["calc-depth", "calc-span", "calc-pitch", "calc-mod-overhang"].forEach(function (id) {
+    ["calc-depth", "calc-span", "calc-pitch", "calc-mod-overhang", "calc-cant-girder"].forEach(function (id) {
       var e = $(id); if (!e) return;
       e.addEventListener("input", function () { if (id === "calc-pitch") $("sy-pitch").value = e.value; queue(); });
     });

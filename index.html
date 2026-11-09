@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Solar Pergola Structural Sizing & Regulatory Compliance Engine | David M. Henke</title>
+    <title>Solar Pergola: A Covered Patio That Powers Itself | David M. Henke</title>
     <meta
       name="description"
       content="Preliminary structural sizing, dimensional limit analysis, and building code compliance for freestanding 4-post steel solar pergolas in Salt Lake City, Utah (ZIP 84108) under 2024 IBC, ASCE 7-22, AISC 360-22, and Utah Code §15A-3-107."
@@ -645,8 +645,10 @@
 
       @media (max-width: 960px) {
         .designer-grid {
-          grid-template-columns: 1fr;
+          grid-template-columns: minmax(0, 1fr);
         }
+        .calc-controls, .calc-results { min-width: 0; }
+        .calc-controls select { max-width: 100%; }
       }
 
       .calc-subgroup {
@@ -919,6 +921,24 @@
         color: var(--global-text-color);
       }
 
+      /* ----- Sizer: zoning + price ----------------------------------- */
+      .zn-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem 0.9rem; margin-top: 0.75rem; }
+      .zn-num {
+        width: 100%; padding: 0.4rem 0.5rem; border: 1px solid var(--global-divider-color); border-radius: 6px;
+        background-color: var(--global-bg-color); color: var(--global-text-color);
+        font-family: "JetBrains Mono", monospace; font-size: 0.88rem; box-sizing: border-box;
+      }
+      .zn-hint { display: block; font-size: 0.76rem; color: var(--global-text-color-light); line-height: 1.35; margin-top: 0.25rem; }
+      .zn-check { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.85rem; line-height: 1.35; cursor: pointer; }
+      .zn-check input { margin-top: 0.2rem; accent-color: var(--global-theme-color); }
+      .zn-price { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+      .zn-price th, .zn-price td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--global-divider-color); text-align: right; white-space: nowrap; }
+      .zn-price th:first-child, .zn-price td:first-child { text-align: left; white-space: normal; }
+      .zn-price td { font-family: "JetBrains Mono", monospace; }
+      .zn-price td:first-child { font-family: "Inter", sans-serif; }
+      .zn-price tr.zn-total td { font-weight: 700; border-top: 2px solid var(--global-divider-color); }
+      .master-status-head { flex-wrap: wrap; gap: 0.4rem; }
+
       /* ----- Solar Generation Model ---------------------------------- */
       .sy-controls {
         display: grid;
@@ -1068,19 +1088,20 @@
     <!-- Page Header -->
     <header class="page-header">
       <span class="page-header__eyebrow">
-        <i class="fa-solid fa-solar-panel"></i> Civil & Structural Engineering Report
+        <i class="fa-solid fa-solar-panel"></i> Self-powered outdoor living &bull; Salt Lake City
       </span>
-      <h1>Solar Pergola Structural Sizing & Regulatory Compliance Engine</h1>
+      <h1>Solar Pergola: A Covered Patio That Powers Itself</h1>
       <p class="subtitle">
-        Dimensional limit analysis, parametric structural sizing, and building code compliance evaluation for
-        freestanding 4-post steel solar pergolas in Salt Lake City, Utah (ZIP 84108).
+        A freestanding steel pergola whose roof is a 6 kW solar array: 320 sq ft of shade and about 8,000 kWh of
+        electricity a year on Salt Lake City's East Bench (ZIP 84108). This site documents the engineering behind it:
+        preliminary structural sizing, zoning screens, solar yield, pricing and the permitting path.
       </p>
 
       <div class="header-meta">
         <span><strong>Location:</strong> Salt Lake City East Bench (5,500 ft MSL)</span>
         <span><strong>Building Codes:</strong> 2024 IBC &bull; ASCE 7-22 &bull; AISC 360-22</span>
         <span><strong>State Amendments:</strong> Utah Code Title 15A &sect;3-107</span>
-        <span><strong>Zoning Limit:</strong> SLC Title 21A &le; 15.0 ft</span>
+        <span><strong>Zoning:</strong> SLC &sect;21A.40.050 &bull; 9&ndash;17 ft by zone</span>
       </div>
     </header>
 
@@ -1116,6 +1137,44 @@
       <!-- ============================================================== -->
       <div id="overview" class="tab-content active" role="tabpanel">
         <div class="content">
+          <h2>The Product: A Covered Patio That Powers Itself</h2>
+          <p>
+            The launch product is one engineered model, the <strong>Flagship 16 &times; 20</strong>: a knee-braced, four-post steel
+            pergola with a 7&deg; south-facing roof made of ten 600 W solar modules. It is sold the way premium pergolas and patio covers are
+            sold, as an outdoor room, and the electricity is a benefit of that room rather than the reason to buy it.
+          </p>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <span class="stat-card__label">Covered area</span>
+              <span class="stat-card__val">320 sq ft</span>
+              <span class="stat-card__desc">16 &times; 20 ft clear patio under a 6.0 kWp solar roof, 8 ft clear at the low edge.</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Annual output</span>
+              <span class="stat-card__val">&asymp; 8,100 kWh</span>
+              <span class="stat-card__desc">Modeled long-term mean; 95% uncertainty interval 7,250&ndash;8,910 kWh. See <a href="#solar">Solar Generation</a>.</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Installed price (est.)</span>
+              <span class="stat-card__val">&asymp; $46,500</span>
+              <span class="stat-card__desc">Planning range $34,000&ndash;$59,000 depending on site. See the <a href="#calculator">Sizer</a>.</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Electricity value</span>
+              <span class="stat-card__val">$325&ndash;$825/yr</span>
+              <span class="stat-card__desc">At Rocky Mountain Power's ~4.0&ndash;4.9&cent;/kWh export credit to ~10.2&cent;/kWh retail.</span>
+            </div>
+          </div>
+          <div class="callout callout-info">
+            <strong class="callout-title">Why it is not sold on payback</strong>
+            <p style="margin: 0.4rem 0 0;">
+              Since 2026 a purchased residential system no longer earns the 30% federal tax credit, and Utah net billing credits exported
+              power at roughly half the retail rate. Energy savings alone would take decades to repay the structure. The comparison that
+              matters is with a premium pergola or patio cover of the same size: the solar roof adds power, a cooler patio and a
+              distinctive look for a modest premium over steel framing alone.
+            </p>
+          </div>
+
           <h2>Executive Engineering Summary</h2>
           <p>
             Freestanding residential solar pergolas represent an increasingly high-value category of distributed clean energy
@@ -1138,8 +1197,8 @@
             </div>
             <div class="stat-card">
               <span class="stat-card__label">Zoning Envelope</span>
-              <span class="stat-card__val">&le; 15.0 ft</span>
-              <span class="stat-card__desc">Salt Lake City §21A.40.050 max apex height limit for detached accessory structures.</span>
+              <span class="stat-card__val">9&ndash;17 ft</span>
+              <span class="stat-card__desc">SLC §21A.40.050 height limit by zone and roof type: 12 ft flat / 17 ft pitched in R-1, R-2, SR and FR; 15 ft pitched in the Yalecrest overlay.</span>
             </div>
             <div class="stat-card">
               <span class="stat-card__label">Optimal Pitch</span>
@@ -1169,9 +1228,11 @@
               substantial lateral seismic forces on cantilevered columns carrying large roof masses.
             </li>
             <li>
-              <strong>Zoning Apex Height Ceiling ($H_{apex} \le 15.0\text{ ft}$):</strong> Salt Lake City Code §21A.40.050 restricts
-              detached accessory buildings to 15.0 feet in total height. At higher pitches ($20^\circ\text{--}35^\circ$), large
-              pergolas automatically violate zoning laws.
+              <strong>Zoning Height Limit (9&ndash;17 ft by zone):</strong> Salt Lake City Code §21A.40.050 limits detached accessory
+              buildings to 12 ft with a flat roof and 17 ft with a pitched roof in the R-1, R-2, SR and FR zones, 15 ft pitched in the
+              Yalecrest overlay, and 14 ft pitched / 9 ft flat in SR-1A. The code does not define the pitch at which a roof stops
+              being "flat", so a 7&ndash;10&deg; roof needs a planner's confirmation. This report's tables use the strictest common
+              pitched case, 15 ft; the Interactive Sizer checks the selected zone.
             </li>
           </ul>
 
@@ -1261,11 +1322,11 @@
 
               <!-- Apex Height -->
               <line x1="740" y1="390" x2="740" y2="100" stroke="#b91c1c" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
-              <text x="750" y="245" font-family="JetBrains Mono" font-size="12" fill="#b91c1c" font-weight="600">Apex Height (&le; 15.0 ft Limit)</text>
+              <text x="750" y="245" font-family="JetBrains Mono" font-size="12" fill="#b91c1c" font-weight="600">Apex Height (zone limit)</text>
 
               <!-- 15 ft Zoning Ceiling Line -->
               <line x1="100" y1="120" x2="800" y2="120" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="4,4"/>
-              <text x="450" y="115" font-family="JetBrains Mono" font-size="11" fill="#b91c1c" text-anchor="middle">SLC §21A.40.050 Accessory Structure Ceiling: 15.0 ft</text>
+              <text x="450" y="115" font-family="JetBrains Mono" font-size="11" fill="#b91c1c" text-anchor="middle">SLC §21A.40.050 height limit (15.0 ft shown: Yalecrest overlay, pitched)</text>
 
               <!-- Key Components Legend -->
               <g transform="translate(50, 40)">
@@ -1280,7 +1341,7 @@
               </g>
             </svg>
             <div class="diagram-caption">
-              Figure 1.1: 3D structural schematic of freestanding 4-post steel solar pergola showing coordinate axes, primary framing members, knee-braced connections, drilled pier depths, and the 15-foot Salt Lake City zoning ceiling.
+              Figure 1.1: 3D structural schematic of freestanding 4-post steel solar pergola showing coordinate axes, primary framing members, knee-braced connections, drilled pier depths, and the Salt Lake City zoning height limit (15 ft Yalecrest pitched case shown).
             </div>
           </div>
 
@@ -1341,7 +1402,7 @@
             <li><strong>AISC 360-22:</strong> Specification for Structural Steel Buildings (Chapters E, F, G, and H for axial, flexural, shear, and combined stress limits).</li>
             <li><strong>Aluminum Design Manual (ADM 2020):</strong> Structural specifications for extruded 6005-T5/T61 aluminum mounting rails (IronRidge XR series).</li>
             <li><strong>Utah Code Title 15A Chapter 3 §107:</strong> State-specific amendments calibrating Wasatch Front snow curves and seismic-snow co-loading factors.</li>
-            <li><strong>Salt Lake City Code §21A.40.050:</strong> Municipal zoning ordinance restricting detached residential accessory structures to a maximum total height of 15.0 feet.</li>
+            <li><strong>Salt Lake City Code §21A.40.050:</strong> Municipal zoning ordinance for accessory buildings: height (12 ft flat / 17 ft pitched in R-1, R-2, SR, FR; 15 ft pitched in the Yalecrest overlay; 9 / 14 ft in SR-1A), footprint (greater of 480 sq ft or 50% of the house footprint) and setbacks (1 ft from lot lines, 4 ft from the house, 10 ft from a neighboring house).</li>
           </ul>
 
           <h2>Elevation-Harmonized Snow Loads (Utah Code §15A-3-107)</h2>
@@ -1447,8 +1508,8 @@
             </div>
             <div class="stat-card" style="border-left: 4px solid var(--global-danger-block);">
               <span class="stat-card__label">Zoning Height Ceiling Gate</span>
-              <span class="stat-card__val">15.0 ft Max</span>
-              <span class="stat-card__desc">Salt Lake City Code Title 21A.40.050 restricts detached residential accessory buildings to a strict 15.0-foot apex limit.</span>
+              <span class="stat-card__val">15.0 ft (strictest pitched case)</span>
+              <span class="stat-card__desc">Tables on this tab use the Yalecrest-overlay pitched limit of 15 ft. Most of 84108 (R-1, R-2, SR, FR) allows 17 ft pitched or 12 ft flat; check your zone in the Sizer.</span>
             </div>
           </div>
 
@@ -1517,6 +1578,7 @@
           </p>
 
           <div class="table-wrap">
+            <p class="zn-hint" style="margin-bottom: 0.5rem;">Zoning Check column: apex height against 15.0 ft, the strictest pitched-roof limit common in 84108 (Yalecrest overlay). Use the Interactive Sizer for other zones and for the 12 ft flat-roof limit.</p>
             <table class="data-table">
               <thead>
                 <tr>
@@ -1866,18 +1928,28 @@
       <!-- ============================================================== -->
       <div id="calculator" class="tab-content" role="tabpanel">
         <div class="content">
-          <h2>Interactive Pergola Designer & Code Compliance Engine</h2>
+          <h2>Preliminary Sizing Tool (Not for Construction)</h2>
           <p>
-            Configure your custom freestanding steel solar pergola below. Choose exact frame dimensions, lower edge clear height,
-            slopes from flat ($0^\circ$) to steep ($35^\circ$), member cross-sections, structural framing cantilever overhangs, and
-            PV module overhangs. The engine evaluates real-time structural mechanics and reports full compliance status under
-            <strong>2024 IBC, ASCE 7-22, AISC 360-22, Utah Code §15A-3-107</strong>, and <strong>Salt Lake City Code §21A.40.050</strong>.
+            Start from the Flagship 16 &times; 20 model or configure your own: frame dimensions, post spacing, clear height, pitch from
+            0&deg; to 35&deg;, member sections, overhangs, your zoning district and lot distances. The tool screens the design with
+            simplified checks based on <strong>2024 IBC, ASCE 7-22, AISC 360-22, Utah Code §15A-3-107</strong> and
+            <strong>Salt Lake City Code §21A.40.050</strong>, and gives a planning-level installed price.
           </p>
+          <div class="callout callout-warning">
+            <strong class="callout-title">Preliminary sizing only: not for construction</strong>
+            <p style="margin: 0.4rem 0 0;">
+              These are screening estimates from simplified models. The pier depth is an empirical fit, wind suction is interpolated,
+              and uplift, drifting-snow, seismic and girder-buckling checks are not modeled. Every structure must be designed and stamped by a
+              Utah-licensed professional engineer and approved by Salt Lake City Building Services. "Ready for engineer review" means
+              that no screening check flagged a problem; it is not a code-compliance determination. Prices are planning estimates, not quotes.
+            </p>
+          </div>
 
           <!-- Quick Presets Toolbar -->
           <div class="presets-bar">
-            <span style="font-size: 0.82rem; font-weight: 600; margin-right: 0.35rem;">Quick Presets:</span>
-            <button type="button" class="preset-chip active" id="preset-std16">Standard M (16&times;20, 7&deg; Braced)</button>
+            <span style="font-size: 0.82rem; font-weight: 600; margin-right: 0.35rem;">Launch model:</span>
+            <button type="button" class="preset-chip active" id="preset-std16"><i class="fa-solid fa-star"></i> Flagship 16&times;20, 7&deg; Braced</button>
+            <span style="font-size: 0.82rem; font-weight: 600; margin: 0 0.35rem 0 0.75rem;">Other configurations:</span>
             <button type="button" class="preset-chip" id="preset-std12">Small Patio (12&times;16, 10&deg;)</button>
             <button type="button" class="preset-chip" id="preset-std24">Large Double-Bay (20&times;24, 7&deg;)</button>
             <button type="button" class="preset-chip" id="preset-flat">Flat Roof (0&deg; Pitch, Uniform Ht)</button>
@@ -2114,6 +2186,55 @@
                   </select>
                 </div>
               </div>
+
+              <!-- Group 6: Site & Zoning -->
+              <div class="calc-subgroup">
+                <h4><i class="fa-solid fa-map-location-dot"></i> Site & Zoning (SLC &sect;21A.40.050)</h4>
+                <div class="calc-group">
+                  <label for="calc-zone">Zoning district:</label>
+                  <select id="calc-zone">
+                    <option value="r1" selected>R-1, R-2, SR (12 ft flat / 17 ft pitched)</option>
+                    <option value="fr">FR Foothill (12 ft flat / 17 ft pitched)</option>
+                    <option value="yale">Yalecrest overlay (12 ft flat / 15 ft pitched)</option>
+                    <option value="sr1a">SR-1A (9 ft flat / 14 ft pitched)</option>
+                    <option value="fp">FP, RMF, R-MU (12 ft flat / 17 ft pitched, to roof midpoint)</option>
+                  </select>
+                </div>
+                <div class="calc-group" style="margin-top: 0.75rem;">
+                  <label for="calc-roofclass">Roof counts as (for zoning height):</label>
+                  <select id="calc-roofclass">
+                    <option value="auto" selected>Auto: flat below 2:12 (9.5&deg;), pitched at or above</option>
+                    <option value="flat">Flat (most conservative)</option>
+                    <option value="pitched">Pitched (planner has confirmed)</option>
+                  </select>
+                  <span class="zn-hint">The code does not define "flat"; confirm with SLC Planning.</span>
+                </div>
+                <div class="zn-grid">
+                  <div class="calc-group">
+                    <label for="calc-house-fp">House footprint (sq ft)</label>
+                    <input type="number" id="calc-house-fp" class="zn-num" min="400" max="10000" step="50" value="1500" />
+                  </div>
+                  <div class="calc-group">
+                    <label for="calc-d-house">To house (ft)</label>
+                    <input type="number" id="calc-d-house" class="zn-num" min="0" max="200" step="0.5" value="10" />
+                  </div>
+                  <div class="calc-group">
+                    <label for="calc-d-lot">To side/rear lot line (ft)</label>
+                    <input type="number" id="calc-d-lot" class="zn-num" min="0" max="200" step="0.5" value="5" />
+                  </div>
+                  <div class="calc-group">
+                    <label for="calc-d-neighbor">To neighbor's house (ft)</label>
+                    <input type="number" id="calc-d-neighbor" class="zn-num" min="0" max="500" step="1" value="25" />
+                  </div>
+                </div>
+                <span class="zn-hint">Distances are measured from the roof edge (drip line), not the posts.</span>
+              </div>
+
+              <!-- Group 7: Price options -->
+              <div class="calc-subgroup">
+                <h4><i class="fa-solid fa-tags"></i> Price Estimate Options</h4>
+                <label class="zn-check"><input type="checkbox" id="calc-opt-rain" /> Rainwater catchment at the low edge (gutter, heated downspout, first-flush, 2 &times; 100 gal)</label>
+              </div>
             </div>
 
             <!-- Real-Time Evaluation & SVG Display Column -->
@@ -2131,11 +2252,11 @@
               <!-- Master Compliance Status Card -->
               <div id="master-status-card" class="master-status-card pass">
                 <div class="master-status-head">
-                  <span id="master-status-title">COMPLIANT</span>
-                  <span id="master-status-badge" class="badge badge-success">ALL CHECKS SATISFIED</span>
+                  <span id="master-status-title">READY FOR ENGINEER REVIEW</span>
+                  <span id="master-status-badge" class="badge badge-success">NO SCREENING FLAGS</span>
                 </div>
                 <div id="master-status-desc" class="master-status-desc">
-                  Structure satisfies 2024 IBC, ASCE 7-22 wind/snow, AISC 360-22 steel strength/slenderness, and Salt Lake City accessory zoning height limits.
+                  No preliminary screening check flagged a problem. A Utah-licensed PE must still design and stamp the structure.
                 </div>
               </div>
 
@@ -2152,6 +2273,11 @@
                   <span class="stat-card__desc" id="metric-pier-sub">30" drilled pier</span>
                 </div>
                 <div class="stat-card" style="padding: 0.75rem 0.9rem;">
+                  <span class="stat-card__label">Installed Price (est.)</span>
+                  <span class="stat-card__val" id="metric-price" style="font-size: 1.45rem;">&ndash;</span>
+                  <span class="stat-card__desc" id="metric-price-sub"></span>
+                </div>
+                <div class="stat-card" style="padding: 0.75rem 0.9rem;">
                   <span class="stat-card__label">Steel Weight</span>
                   <span class="stat-card__val" id="metric-weight" style="font-size: 1.45rem;">1,580 lb</span>
                   <span class="stat-card__desc" id="metric-weight-sub">~$1,580 steel cost</span>
@@ -2160,14 +2286,14 @@
 
               <!-- Detailed 6-Check Compliance Grid -->
               <h4 style="margin: 0.5rem 0 0.25rem 0; font-size: 0.98rem; font-family: 'Inter', sans-serif;">
-                Building Code & Structural Mechanics Breakdown
+                Preliminary Screening Checks
               </h4>
 
               <div class="check-cards-grid">
                 <!-- Check 1: Zoning Height -->
                 <div class="check-card pass" id="card-zoning">
                   <div class="check-card__head">
-                    <span class="check-card__title"><i class="fa-solid fa-house-chimney"></i> SLC Zoning Height</span>
+                    <span class="check-card__title"><i class="fa-solid fa-house-chimney"></i> SLC Zoning</span>
                     <span class="badge badge-success" id="badge-zoning">PASS</span>
                   </div>
                   <div class="dc-bar-bg">
@@ -2248,6 +2374,14 @@
                   </div>
                 </div>
               </div>
+
+              <h4 style="margin: 1.25rem 0 0.25rem 0; font-size: 0.98rem; font-family: 'Inter', sans-serif;">
+                Installed Price Estimate (planning level)
+              </h4>
+              <div style="overflow-x: auto;">
+                <table class="zn-price" id="price-table"></table>
+              </div>
+              <p class="zn-hint" id="price-note" style="margin-top: 0.4rem;"></p>
             </div>
           </div>
         </div>
@@ -2375,7 +2509,7 @@
             <div id="sy-sweep" class="sy-plot"></div>
             <p class="diagram-caption">
               Annual AC energy for the same module count at every pitch from 0&deg; to 45&deg;. The shaded band is the 7&ndash;10&deg; window that
-              this report found to satisfy both the 15.0 ft zoning apex limit and module uplift limits.
+              this report found to satisfy both the zoning height limits and module uplift limits.
             </p>
           </div>
 
@@ -2427,7 +2561,7 @@
           <ul>
             <li>
               <strong>Lock Roof Pitch Between 7&deg; and 10&deg;:</strong> This pitch provides sufficient water run-off and snow shed
-              while guaranteeing that total structure apex height remains safely under the 15.0-foot zoning limit. Furthermore,
+              while keeping the apex under the zoning height limit in every common 84108 zone (12 ft if the city treats the roof as flat). Furthermore,
               it prevents corner wind suction from exceeding the standard 33.4 psf commercial module clamp limit.
             </li>
             <li>
@@ -2728,12 +2862,38 @@
         var peakSuction = baseSuction * overhangSuctionFactor;
 
         // -------------------------------------------------------------
-        // 3. Code Check 1: Salt Lake City Zoning Height Limit
+        // 3. Code Check 1: Salt Lake City Zoning (§21A.40.050): height, footprint, setbacks
         // -------------------------------------------------------------
-        var zoningLimit = 15.0;
-        var zoningOk = apexHt <= zoningLimit;
-        var zoningMargin = zoningLimit - apexHt;
-        var dcZoning = apexHt / zoningLimit;
+        var ZONES = {
+          r1:   { name: "R-1/R-2/SR", flat: 12, pitched: 17, midpoint: false, fpMax: null },
+          fr:   { name: "FR",         flat: 12, pitched: 17, midpoint: false, fpMax: null, note: "FR: the city handout says accessory buildings are not allowed in the rear yard; confirm placement with Planning." },
+          yale: { name: "Yalecrest",  flat: 12, pitched: 15, midpoint: false, fpMax: null },
+          sr1a: { name: "SR-1A",      flat: 9,  pitched: 14, midpoint: false, fpMax: 480 },
+          fp:   { name: "FP/RMF",     flat: 12, pitched: 17, midpoint: true,  fpMax: null, note: "FP: the city handout says accessory buildings are not allowed in the rear yard; confirm placement with Planning." }
+        };
+        var zoneKey = document.getElementById("calc-zone").value;
+        var zone = ZONES[zoneKey] || ZONES.r1;
+        var roofClass = document.getElementById("calc-roofclass").value;
+        var isPitched = roofClass === "pitched" || (roofClass === "auto" && pitch >= Math.atan(2 / 12) * 180 / Math.PI);
+        var zoningLimit = isPitched ? zone.pitched : zone.flat;
+        var zoningHt = (isPitched && zone.midpoint) ? (hlow + apexHt) / 2.0 : apexHt;
+        var heightOk = zoningHt <= zoningLimit;
+        var zoningMargin = zoningLimit - zoningHt;
+        // Footprint = roof drip line: modules overhang both slope edges; girders cantilever both ends
+        var roofFootprint = (W + 2 * modOverFt) * (L + 2 * cantGirder);
+        var houseFp = parseFloat(document.getElementById("calc-house-fp").value) || 0;
+        var fpAllow = zone.fpMax ? zone.fpMax : Math.max(480, 0.5 * houseFp);
+        var fpOk = roofFootprint <= fpAllow;
+        var dHouse = parseFloat(document.getElementById("calc-d-house").value);
+        var dLot = parseFloat(document.getElementById("calc-d-lot").value);
+        var dNeighbor = parseFloat(document.getElementById("calc-d-neighbor").value);
+        var setbackIssues = [];
+        if (!(dHouse >= 4)) setbackIssues.push("4 ft from the house");
+        if (!(dLot >= 1)) setbackIssues.push("1 ft from side/rear lot lines");
+        if (!(dNeighbor >= 10)) setbackIssues.push("10 ft from a neighboring house");
+        var setbackOk = setbackIssues.length === 0;
+        var zoningOk = heightOk && fpOk && setbackOk;
+        var dcZoning = Math.max(zoningHt / zoningLimit, roofFootprint / fpAllow);
 
         // -------------------------------------------------------------
         // 4. Code Check 2: PV Module Uplift & Overhang Limit
@@ -2841,7 +3001,8 @@
         // 10. Update UI Elements
         // -------------------------------------------------------------
         document.getElementById("metric-apex").textContent = apexHt.toFixed(1) + " ft";
-        document.getElementById("metric-apex-sub").textContent = zoningOk ? "≤ 15.0 ft limit (Pass)" : "> 15.0 ft limit (Fail)";
+        document.getElementById("metric-apex-sub").textContent = (heightOk ? "≤ " : "> ") + zoningLimit.toFixed(1) + " ft (" +
+          (isPitched ? "pitched" : "flat") + ", " + zone.name + ")";
         document.getElementById("metric-pier").textContent = pierDepth.toFixed(1) + " ft";
         document.getElementById("metric-pier-sub").textContent = pierDia + '" drilled pier';
         document.getElementById("metric-weight").textContent = totalSteelWeight.toLocaleString() + " lb";
@@ -2855,18 +3016,21 @@
 
         if (allOk) {
           masterCard.className = "master-status-card pass";
-          masterTitle.textContent = "COMPLIANT";
+          masterTitle.textContent = "READY FOR ENGINEER REVIEW";
           masterBadge.className = "badge badge-success";
-          masterBadge.textContent = "ALL CODES SATISFIED";
-          masterDesc.textContent = "Configuration satisfies 2024 IBC, ASCE 7-22 wind/snow, AISC 360-22 steel strength/slenderness, and Salt Lake City accessory zoning height limits.";
+          masterBadge.textContent = "NO SCREENING FLAGS";
+          masterDesc.textContent = "No preliminary screening check flagged a problem. This is not a code-compliance determination: a Utah-licensed PE must design and stamp the structure, and SLC Building Services must approve it." +
+            (zone.note ? " " + zone.note : "");
         } else {
           masterCard.className = "master-status-card fail";
-          masterTitle.textContent = "NON-COMPLIANT";
+          masterTitle.textContent = "REVISE BEFORE ENGINEER REVIEW";
           masterBadge.className = "badge badge-danger";
-          masterBadge.textContent = "CODE VIOLATIONS DETECTED";
+          masterBadge.textContent = "SCREENING FLAGS";
 
           var reasons = [];
-          if (!zoningOk) reasons.push("Apex height exceeds SLC 15.0 ft zoning ceiling (" + apexHt.toFixed(1) + " ft)");
+          if (!heightOk) reasons.push("Height " + zoningHt.toFixed(1) + " ft exceeds the " + zoningLimit.toFixed(1) + " ft " + (isPitched ? "pitched" : "flat") + "-roof limit in " + zone.name);
+          if (!fpOk) reasons.push("Roof footprint " + Math.round(roofFootprint) + " sq ft exceeds the " + Math.round(fpAllow) + " sq ft accessory-building allowance");
+          if (!setbackOk) reasons.push("Setbacks: keep the roof edge at least " + setbackIssues.join(", "));
           if (!moduleUpliftOk) reasons.push("Aerodynamic wind suction exceeds certified 33.4 psf module clamp limit (" + peakSuction.toFixed(1) + " psf)");
           if (!moduleOverhangOk) reasons.push("Module overhang exceeds manufacturer limit (" + modOverIn + '" > 20")');
           if (dcRafter > 1.0) reasons.push("Rafter flexure/deflection overstressed (D/C = " + dcRafter.toFixed(2) + ")");
@@ -2874,7 +3038,7 @@
           if (!slendernessOk) reasons.push("Pillar fails AISC slenderness limit KL/r = " + Math.round(slenderness) + " > 300");
           else if (dcUpright > 1.0) reasons.push("Pillar combined axial-bending overstressed (D/C = " + dcUpright.toFixed(2) + ")");
 
-          masterDesc.textContent = "Action Required: " + reasons.join("; ") + ".";
+          masterDesc.textContent = "Revise before sending to an engineer: " + reasons.join("; ") + "." + (zone.note ? " " + zone.note : "");
         }
 
         // Check Card 1: Zoning
@@ -2886,7 +3050,10 @@
         barZ.style.width = Math.min(dcZoning * 100, 100) + "%";
         barZ.style.backgroundColor = zoningOk ? "var(--global-success-block)" : "var(--global-danger-block)";
         document.getElementById("desc-zoning").textContent =
-          "Apex " + apexHt.toFixed(1) + " ft vs 15.0 ft ceiling (" + (zoningMargin >= 0 ? "+" : "") + zoningMargin.toFixed(1) + " ft margin).";
+          "Height " + zoningHt.toFixed(1) + " ft" + (isPitched && zone.midpoint ? " (roof midpoint)" : "") + " vs " + zoningLimit.toFixed(1) + " ft " +
+          (isPitched ? "pitched" : "flat") + " limit (" + (zoningMargin >= 0 ? "+" : "") + zoningMargin.toFixed(1) + " ft). Footprint " +
+          Math.round(roofFootprint) + " of " + Math.round(fpAllow) + " sq ft. Setbacks " + (setbackOk ? "OK." : "short: " + setbackIssues.join(", ") + ".") +
+          (zone.note ? " " + zone.note : "");
 
         // Check Card 2: Module Uplift & Overhang
         var cardU = document.getElementById("card-uplift");
@@ -2949,6 +3116,42 @@
           "Embedment: " + pierDepth.toFixed(1) + ' ft (' + pierDia + '" dia). IBC Formula 18-1 satisfies 3.0 ft frost line.';
 
         // -------------------------------------------------------------
+        // 10b. Planning-level installed price (not a quote)
+        // -------------------------------------------------------------
+        var MOD_LEN = 93.8 / 12, MOD_WID = 44.6 / 12;
+        var modRows = Math.floor((W / Math.cos(rad) + 2 * modOverFt) / MOD_LEN + 1e-6);
+        var modCols = Math.floor((L + 2 * cantGirder + 2 * modOverFt) / MOD_WID + 1e-6);
+        var nMod = Math.max(1, modRows * modCols);
+        var wattEl = document.getElementById("sy-watt");
+        var modW = wattEl ? parseFloat(wattEl.value) : 600;
+        var kWdc = nMod * modW / 1000;
+        var roofArea = W * (L + 2 * cantGirder);
+        var addRain = document.getElementById("calc-opt-rain").checked;
+        var MARGIN = 0.32;
+        var priceItems = [
+          ["Steel: fabricated, powder-coated (" + totalSteelWeight.toLocaleString() + " lb at $3.50–6.00/lb)", totalSteelWeight * 3.5, totalSteelWeight * 6.0],
+          ["Drilled piers: 4 × " + pierDepth.toFixed(1) + " ft", 4 * (300 + 100 * pierDepth), 4 * (600 + 180 * pierDepth)],
+          ["PV equipment: " + nMod + " × " + modW + " W = " + kWdc.toFixed(1) + " kWp (modules, rails, inverters)", kWdc * 850, kWdc * 1200],
+          ["Electrical, trenching, interconnection", 3000, 6000],
+          ["Erection and labor (" + Math.round(roofArea) + " sq ft at $9–15)", roofArea * 9, roofArea * 15],
+          ["Engineering letter, permits, inspections", 1500, 3500]
+        ];
+        if (addRain) priceItems.push(["Rainwater catchment option", 1200, 3000]);
+        var costLo = 0, costHi = 0;
+        priceItems.forEach(function (it) { costLo += it[1]; costHi += it[2]; });
+        var priceLo = costLo / (1 - MARGIN), priceHi = costHi / (1 - MARGIN), priceMid = (priceLo + priceHi) / 2;
+        function usd(v) { return "$" + (Math.round(v / 100) * 100).toLocaleString(); }
+        document.getElementById("metric-price").textContent = "$" + (priceMid / 1000).toFixed(1) + "k";
+        document.getElementById("metric-price-sub").textContent = usd(priceLo) + "–" + usd(priceHi);
+        var rowsHtml = "<thead><tr><th>Item (direct cost)</th><th>Low</th><th>High</th></tr></thead><tbody>" +
+          priceItems.map(function (it) { return "<tr><td>" + it[0] + "</td><td>" + usd(it[1]) + "</td><td>" + usd(it[2]) + "</td></tr>"; }).join("") +
+          "<tr class='zn-total'><td>Direct cost</td><td>" + usd(costLo) + "</td><td>" + usd(costHi) + "</td></tr>" +
+          "<tr class='zn-total'><td>Installed price at " + Math.round(MARGIN * 100) + "% gross margin</td><td>" + usd(priceLo) + "</td><td>" + usd(priceHi) + "</td></tr></tbody>";
+        document.getElementById("price-table").innerHTML = rowsHtml;
+        document.getElementById("price-note").textContent = "Planning estimate from assumed unit costs, not a quote. Excludes sales tax, batteries, EV charging, " +
+          "site regrading and utility fees. Midpoint " + usd(priceMid) + ", about $" + (priceMid / (kWdc * 1000)).toFixed(2) + " per watt.";
+
+        // -------------------------------------------------------------
         // 11. Render Dynamic Cross-Section Elevation SVG
         // -------------------------------------------------------------
         drawElevationSvg({
@@ -2969,7 +3172,9 @@
           pierDepth: pierDepth,
           pierDia: pierDia,
           allOk: allOk,
-          zoningOk: zoningOk
+          zoningOk: heightOk,
+          zoningLimit: zoningLimit,
+          zoningLabel: "SLC §21A " + zone.name + " " + zoningLimit.toFixed(1) + " ft " + (isPitched ? "pitched" : "flat") + "-roof limit"
         });
       }
 
@@ -2984,7 +3189,7 @@
         var ftScale = 12.0; // pixels per foot of height
 
         // 15-ft Zoning Limit line Y
-        var zoningY = groundY - 15.0 * ftScale;
+        var zoningY = groundY - params.zoningLimit * ftScale;
 
         // Origin for posts
         // Horizontal scale: whole roof depth W fits in <= 360 px, centered
@@ -3055,14 +3260,14 @@
         svg.appendChild(zoneLine);
 
         var zoneText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        zoneText.setAttribute("x", svgW - 30);
+        zoneText.setAttribute("x", 30);
         zoneText.setAttribute("y", zoningY - 6);
-        zoneText.setAttribute("text-anchor", "end");
+        zoneText.setAttribute("text-anchor", "start");
         zoneText.setAttribute("font-family", "JetBrains Mono");
         zoneText.setAttribute("font-size", "10");
         zoneText.setAttribute("font-weight", "600");
         zoneText.setAttribute("fill", "#dc2626");
-        zoneText.textContent = "SLC §21A 15.0 ft Zoning Ceiling";
+        zoneText.textContent = params.zoningLabel;
         svg.appendChild(zoneText);
 
         // Drilled Piers
@@ -3289,7 +3494,8 @@
         "calc-depth", "calc-span", "calc-postw", "calc-pitch", "calc-hlow",
         "calc-post-shape", "calc-girder-shape", "calc-rafter-shape",
         "calc-raf-spacing", "calc-mode", "calc-cant-girder",
-        "calc-mod-overhang", "calc-elev"
+        "calc-mod-overhang", "calc-elev",
+        "calc-zone", "calc-roofclass", "calc-house-fp", "calc-d-house", "calc-d-lot", "calc-d-neighbor", "calc-opt-rain"
       ].forEach(function (id) {
         var el = document.getElementById(id);
         if (el) {
