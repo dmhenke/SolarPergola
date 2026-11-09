@@ -919,6 +919,97 @@
         color: var(--global-text-color);
       }
 
+      /* ----- Solar Generation Model ---------------------------------- */
+      .sy-controls {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem 1.5rem;
+        background-color: var(--global-surface-color);
+        border: 1px solid var(--global-divider-color);
+        border-radius: 8px;
+        padding: 1.25rem 1.5rem;
+        margin: 1.25rem 0 0.5rem;
+      }
+      .sy-hint {
+        font-size: 0.76rem;
+        color: var(--global-text-color-light);
+        line-height: 1.35;
+      }
+      .sy-check {
+        font-weight: 400;
+        font-size: 0.8rem;
+        color: var(--global-text-color-light);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+      .sy-label-row { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+      .calc-group .sy-label-row label.sy-check { font-weight: 400; font-size: 0.8rem; color: var(--global-text-color-light); }
+      .sy-check input { accent-color: var(--global-theme-color); }
+      .sy-num {
+        padding: 0.4rem 0.5rem;
+        border: 1px solid var(--global-divider-color);
+        border-radius: 6px;
+        background-color: var(--global-bg-color);
+        color: var(--global-text-color);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        width: 6rem;
+      }
+      .sy-num:disabled { opacity: 0.65; }
+      .sy-figure {
+        background-color: var(--global-card-bg-color);
+        border: 1px solid var(--global-divider-color);
+        border-radius: 8px;
+        padding: 1rem 1rem 0.5rem;
+        margin: 0.75rem 0 1.75rem;
+      }
+      .sy-plot { width: 100%; min-height: 120px; }
+      .sy-stats { grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); }
+      .sy-stats .stat-card__val { font-size: 1.55rem; }
+      .sy-plot svg, .sy-plot canvas { display: block; max-width: 100%; }
+      .sy-legend {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem 1.1rem;
+        font-size: 0.8rem;
+        color: var(--global-text-color-light);
+        margin-bottom: 0.5rem;
+      }
+      .sy-leg-item { display: inline-flex; align-items: center; gap: 0.4rem; }
+      .sy-sw { display: inline-block; width: 22px; height: 0; }
+      .sy-sw-band { height: 10px; border-radius: 2px; }
+      .sy-sw-ring { display: inline-block; width: 10px; height: 10px; border: 2px solid; border-radius: 50%; }
+      .sy-ramp { display: inline-block; width: 160px; height: 10px; border-radius: 2px; }
+      .sy-tip {
+        position: fixed;
+        z-index: 50;
+        display: none;
+        pointer-events: none;
+        max-width: 280px;
+        background: var(--global-card-bg-color);
+        color: var(--global-text-color);
+        border: 1px solid var(--global-border-color);
+        border-radius: 6px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+        padding: 0.5rem 0.65rem;
+        font-size: 0.8rem;
+        line-height: 1.45;
+      }
+      .sy-tip-muted { color: var(--global-text-color-light); }
+      .sy-details { margin: 0.25rem 0 0.75rem; font-size: 0.85rem; }
+      .sy-details summary { cursor: pointer; color: var(--global-theme-color); font-weight: 600; }
+      .sy-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; font-size: 0.82rem; }
+      .sy-table th, .sy-table td {
+        padding: 0.35rem 0.5rem;
+        border-bottom: 1px solid var(--global-divider-color);
+        text-align: right;
+        white-space: nowrap;
+      }
+      .sy-table th:first-child, .sy-table td:first-child { text-align: left; }
+      .sy-table td { font-family: "JetBrains Mono", monospace; }
+
       /* ----- Footer -------------------------------------------------- */
       footer.site-footer {
         background-color: var(--global-footer-bg-color);
@@ -1011,6 +1102,9 @@
         </button>
         <button class="tab-button" data-tab="calculator" role="tab" aria-selected="false" aria-controls="calculator">
           <i class="fa-solid fa-calculator"></i> Interactive Sizer
+        </button>
+        <button class="tab-button" data-tab="solar" role="tab" aria-selected="false" aria-controls="solar">
+          <i class="fa-solid fa-sun"></i> Solar Generation
         </button>
         <button class="tab-button" data-tab="permitting" role="tab" aria-selected="false" aria-controls="permitting">
           <i class="fa-solid fa-clipboard-check"></i> Permitting Roadmap
@@ -2150,6 +2244,155 @@
       </div>
 
       <!-- ============================================================== -->
+      <!-- TAB: ANNUAL SOLAR GENERATION MODEL                            -->
+      <!-- ============================================================== -->
+      <div id="solar" class="tab-content" role="tabpanel">
+        <div class="content">
+          <h2>Annual Solar Generation Model</h2>
+          <p>
+            Expected AC energy from the PV roof over a typical year, computed in your browser from first principles. For every
+            10-minute interval of all 365 days, the model locates the sun over the site (40.76&deg; N, 111.83&deg; W), finds the angle
+            between the sunlight and the pitched roof, splits the sky into direct, circumsolar, diffuse and ground-reflected light, and
+            converts the light reaching the modules into AC power. The roof faces <strong>due south</strong> (azimuth 180&deg;), and the
+            module count follows the footprint set in the <a href="#calculator">Interactive Sizer</a>. Pitch is kept in sync with the Sizer.
+          </p>
+
+          <div class="sy-controls">
+            <div class="calc-group">
+              <label for="sy-pitch">Roof pitch (south-facing): <span class="val" id="disp-sy-pitch">7&deg;</span></label>
+              <input type="range" id="sy-pitch" min="0" max="35" step="1" value="7" />
+            </div>
+            <div class="calc-group">
+              <label for="sy-watt">Module rating: <span class="val" id="disp-sy-watt">600 W</span></label>
+              <input type="range" id="sy-watt" min="400" max="700" step="10" value="600" />
+            </div>
+            <div class="calc-group">
+              <div class="sy-label-row">
+                <label for="sy-nmod">Module count</label>
+                <label class="sy-check"><input type="checkbox" id="sy-auto" checked /> auto from footprint</label>
+              </div>
+              <input type="number" id="sy-nmod" min="1" max="80" step="1" value="10" class="sy-num" />
+              <span class="sy-hint" id="sy-array-note"></span>
+            </div>
+            <div class="calc-group">
+              <label for="sy-loss">System losses (PVWatts default 14%): <span class="val" id="disp-sy-loss">14%</span></label>
+              <input type="range" id="sy-loss" min="5" max="25" step="1" value="14" />
+            </div>
+            <div class="calc-group">
+              <label for="sy-horizon">Eastern horizon (Wasatch foothills): <span class="val" id="disp-sy-horizon">0&deg;</span></label>
+              <input type="range" id="sy-horizon" min="0" max="20" step="1" value="0" />
+              <span class="sy-hint">Blocks direct sun from azimuth 45&ndash;150&deg; below this altitude. Measure on site.</span>
+            </div>
+            <div class="calc-group">
+              <label for="sy-snow">Snow-cover loss, Dec&ndash;Feb: <span class="val" id="disp-sy-snow">0%</span></label>
+              <input type="range" id="sy-snow" min="0" max="50" step="1" value="0" />
+              <span class="sy-hint">Low pitches shed snow slowly; 0% matches PVWatts.</span>
+            </div>
+          </div>
+
+          <div class="stat-grid sy-stats">
+            <div class="stat-card">
+              <span class="stat-card__label">Annual AC energy</span>
+              <span class="stat-card__val" id="sy-annual">&ndash;</span>
+              <span class="stat-card__desc" id="sy-annual-sub"></span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Specific yield</span>
+              <span class="stat-card__val" id="sy-spec">&ndash;</span>
+              <span class="stat-card__desc" id="sy-spec-sub"></span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Pitch penalty</span>
+              <span class="stat-card__val" id="sy-tilt">&ndash;</span>
+              <span class="stat-card__desc" id="sy-tilt-sub"></span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Summer / winter</span>
+              <span class="stat-card__val" id="sy-season">&ndash;</span>
+              <span class="stat-card__desc" id="sy-season-sub"></span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-card__label">Hours of sun</span>
+              <span class="stat-card__val" id="sy-day">&ndash;</span>
+              <span class="stat-card__desc" id="sy-day-sub"></span>
+            </div>
+          </div>
+
+          <h3>Figure S1 &mdash; Power output by day of year and time of day</h3>
+          <div class="sy-figure">
+            <div class="sy-legend" id="sy-heat-legend"></div>
+            <div id="sy-heatmap" class="sy-plot"></div>
+            <p class="diagram-caption">
+              Each column is one day; each row is a 10-minute clock interval (Mountain time, with daylight saving time Mar 8&ndash;Nov 1, 2026).
+              Color shows AC output under long-term average sky conditions. Solid curves mark sunrise and sunset; the dashed curve is solar noon,
+              which drifts with the equation of time. Hover any cell for sun altitude, azimuth, incidence angle on the roof and output.
+            </p>
+          </div>
+
+          <h3>Figure S2 &mdash; Daily energy through the year</h3>
+          <div class="sy-figure">
+            <div class="sy-legend" id="sy-daily-legend"></div>
+            <div id="sy-daily" class="sy-plot"></div>
+            <p class="diagram-caption">
+              Expected kWh per day (7-day running mean of a climatological year; real days scatter widely around this curve with weather).
+              Shading is the approximate 95% uncertainty interval of the long-term mean.
+            </p>
+          </div>
+
+          <h3>Figure S3 &mdash; Monthly energy</h3>
+          <div class="sy-figure">
+            <div id="sy-monthly" class="sy-plot"></div>
+            <p class="diagram-caption">Whiskers show the approximate 95% uncertainty interval of each long-term monthly mean.</p>
+            <details class="sy-details">
+              <summary>Show monthly table</summary>
+              <div style="overflow-x:auto;"><table class="sy-table" id="sy-table"></table></div>
+            </details>
+          </div>
+
+          <h3>Figure S4 &mdash; Sun path over the pergola</h3>
+          <div class="sy-figure">
+            <div class="sy-legend" id="sy-sunpath-legend"></div>
+            <div id="sy-sunpath" class="sy-plot"></div>
+            <p class="diagram-caption">
+              Sun altitude versus compass azimuth on the 21st of representative months; dots mark each clock hour. The teal ring is the
+              roof&rsquo;s surface normal (altitude 90&deg; minus pitch, due south). The closer the sun&rsquo;s track passes to the ring,
+              the more directly light strikes the modules. A low pitch suits the high summer sun; a steeper pitch suits the low winter sun.
+            </p>
+          </div>
+
+          <h3>Figure S5 &mdash; Annual energy versus roof pitch</h3>
+          <div class="sy-figure">
+            <div id="sy-sweep" class="sy-plot"></div>
+            <p class="diagram-caption">
+              Annual AC energy for the same module count at every pitch from 0&deg; to 45&deg;. The shaded band is the 7&ndash;10&deg; window that
+              this report found to satisfy both the 15.0 ft zoning apex limit and module uplift limits.
+            </p>
+          </div>
+
+          <div class="callout callout-info">
+            <strong class="callout-title">Method, inputs and limitations</strong>
+            <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+              <li><strong>Sun position:</strong> Spencer (1971) declination and equation of time; hour angle from local standard time
+                (UTC&minus;7) and longitude; sunrise/sunset at apparent altitude &minus;0.833&deg; (refraction and solar disc).</li>
+              <li><strong>Irradiance:</strong> long-term monthly global horizontal (GHI) and diffuse horizontal irradiance for Salt Lake City
+                (NREL Solar Radiation Data Manual, WBAN 24127; stated uncertainty 9%). A Haurwitz clear-sky shape distributes each month across
+                days and hours; daily clearness is smoothed between months and constrained to reproduce every monthly mean exactly.</li>
+              <li><strong>Transposition:</strong> Hay&ndash;Davies model onto a plane of pitch &beta; and azimuth 180&deg;; ground albedo 0.20
+                (0.35 in snowy Dec&ndash;Feb); Martin&ndash;Ruiz incidence-angle losses (a<sub>r</sub> = 0.16).</li>
+              <li><strong>PV conversion:</strong> NOCT 45 &deg;C open-rack cell temperature driven by NOAA 1991&ndash;2020 daily high/low normals;
+                power temperature coefficient &minus;0.30%/&deg;C; lumped system losses (default 14%, as in PVWatts); inverter efficiency 96%; no clipping.</li>
+              <li><strong>Uncertainty:</strong> the &plusmn;10.3% interval combines irradiance data (&plusmn;9%), transposition and temperature modeling
+                (&plusmn;4%) and loss assumptions (&plusmn;3%) in quadrature. It applies to the long-term average. A single calendar year,
+                and especially a single winter month affected by valley inversions, can deviate further.</li>
+              <li><strong>Not modeled:</strong> the station sits on the valley floor (4,227 ft). The East Bench (about 5,500 ft) is often above winter
+                inversion haze but sits closer to the foothills. Set the eastern-horizon slider from a site survey. Snow shedding depends on pitch
+                and storm sequence, so treat the snow slider as a scenario, not a prediction. Trees, the house and the pergola&rsquo;s own framing are not modeled.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================== -->
       <!-- TAB 6: PERMITTING ROADMAP & RECOMMENDATIONS                    -->
       <!-- ============================================================== -->
       <div id="permitting" class="tab-content" role="tabpanel">
@@ -2985,5 +3228,7 @@
       });
       runCalc();
     </script>
+    <!-- Annual solar generation model (sun position, transposition, PV output) -->
+    <script src="solar_yield.js"></script>
   </body>
 </html>
