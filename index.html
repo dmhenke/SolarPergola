@@ -1900,6 +1900,16 @@
                 </div>
 
                 <div class="calc-group" style="margin-top: 0.75rem;">
+                  <label for="calc-postw">
+                    Post Spacing B (Front-to-Back): <span class="val" id="disp-postw">16.0 ft</span>
+                  </label>
+                  <input type="range" id="calc-postw" min="6" max="16" step="0.5" value="16" />
+                  <span style="font-size: 0.76rem; color: var(--global-text-color-light); margin-top: 0.2rem;">
+                    <em id="note-postw">Posts at the roof edges (no rafter overhang).</em>
+                  </span>
+                </div>
+
+                <div class="calc-group" style="margin-top: 0.75rem;">
                   <label for="calc-span">
                     Post Spacing L (Girder Span): <span class="val" id="disp-span">20.0 ft</span>
                   </label>
@@ -2658,6 +2668,12 @@
       function runCalc() {
         var W = parseFloat(document.getElementById("calc-depth").value);
         var L = parseFloat(document.getElementById("calc-span").value);
+        // Front-to-back post spacing B (≤ W); rafters overhang equally at both edges
+        var postWEl = document.getElementById("calc-postw");
+        postWEl.max = W;
+        if (parseFloat(postWEl.value) > W) postWEl.value = W;
+        var B = Math.min(parseFloat(postWEl.value), W);
+        var aOver = (W - B) / 2.0; // horizontal rafter overhang at each edge, ft
         var pitch = parseFloat(document.getElementById("calc-pitch").value);
         var hlow = parseFloat(document.getElementById("calc-hlow").value);
         var postKey = document.getElementById("calc-post-shape").value;
@@ -2672,6 +2688,10 @@
         // Display current values
         document.getElementById("disp-depth").textContent = W.toFixed(1) + " ft";
         document.getElementById("disp-span").textContent = L.toFixed(1) + " ft";
+        document.getElementById("disp-postw").textContent = B.toFixed(1) + " ft";
+        document.getElementById("note-postw").textContent = aOver > 0
+          ? "Rafters overhang " + aOver.toFixed(2) + " ft past the posts at both the low (south) and high (north) edges."
+          : "Posts at the roof edges (no rafter overhang).";
         document.getElementById("disp-pitch").textContent = pitch + "°";
         document.getElementById("disp-hlow").textContent = hlow.toFixed(1) + " ft" + (pitch === 0 ? " (Uniform)" : "");
         document.getElementById("disp-cant-girder").textContent = cantGirder.toFixed(1) + " ft";
@@ -2690,6 +2710,8 @@
         var framingDepth = 1.0; // ft allowance for girder + rafter depths
         var modOverFt = modOverIn / 12.0;
         var apexHt = hhigh + framingDepth + modOverFt * Math.sin(rad);
+        var hPostLow = hlow + aOver * Math.tan(rad);        // low (south) post height
+        var hPostHigh = hlow + (aOver + B) * Math.tan(rad); // high (north) post height
 
         // -------------------------------------------------------------
         // 2. Environmental Loads (Utah Code §15A-3-107 & ASCE 7-22)
@@ -2724,20 +2746,29 @@
         // -------------------------------------------------------------
         // 5. Code Check 3: Rafter Structural Capacity (AISC 360-22)
         // -------------------------------------------------------------
-        var Lraf = W / Math.cos(rad);
+        var Lraf = W / Math.cos(rad);       // full rafter length along slope
+        var Ls = B / Math.cos(rad);         // back-span between girders, along slope
+        var ao = aOver / Math.cos(rad);     // each overhang, along slope
         var wuRaf = sRaf * (1.2 * D + 1.0 * ps) + 1.2 * rafter.wt; // plf LRFD
-        var MuRaf = wuRaf * Math.pow(Lraf, 2) / 8.0 / 1000.0; // kip-ft
+        // Beam overhanging both supports equally (uniform load, superposition)
+        var MmidRaf = wuRaf * Ls * Ls / 8.0 - wuRaf * ao * ao / 2.0; // midspan (may go negative)
+        var MsupRaf = wuRaf * ao * ao / 2.0;                         // over each girder
+        var MuRaf = Math.max(Math.abs(MmidRaf), MsupRaf) / 1000.0;   // kip-ft
         var phiMnRaf = 0.9 * rafter.Fy * rafter.Zx / 12.0; // kip-ft
-        // Deflection check (L/180 under snow)
+        // Deflection under 0.7 x snow: back-span L/180; cantilever tip 2a/180 (IBC Table 1604.3, note h)
         var wsRaf = sRaf * (0.7 * ps) / 12.0; // lb/in
-        var deflRaf = 5.0 * wsRaf * Math.pow(Lraf * 12.0, 4) / (384.0 * 29000.0 * 1000.0 * rafter.Ix);
-        var deflLimitRaf = (Lraf * 12.0) / 180.0;
-        var dcRafter = Math.max(MuRaf / phiMnRaf, deflRaf / deflLimitRaf);
+        var EIraf = 29000.0 * 1000.0 * rafter.Ix;
+        var lIn = Ls * 12.0, aIn = ao * 12.0;
+        var deflMid = wsRaf * lIn * lIn * (5.0 * lIn * lIn - 24.0 * aIn * aIn) / (384.0 * EIraf);
+        var deflTip = wsRaf * aIn * (3.0 * Math.pow(aIn, 3) + 6.0 * aIn * aIn * lIn - Math.pow(lIn, 3)) / (24.0 * EIraf);
+        var dcDefl = Math.abs(deflMid) / (lIn / 180.0);
+        if (aIn > 0) dcDefl = Math.max(dcDefl, Math.abs(deflTip) / (2.0 * aIn / 180.0));
+        var dcRafter = Math.max(MuRaf / phiMnRaf, dcDefl);
 
         // -------------------------------------------------------------
         // 6. Code Check 4: Girder / Side Beam Capacity (AISC 360-22)
         // -------------------------------------------------------------
-        var tribW = W / 2.0;
+        var tribW = W / 2.0; // symmetric rafter overhangs: each girder still carries half of W
         var wuGir = tribW * (1.2 * D + 1.0 * ps) + 1.2 * girder.wt; // plf LRFD
         var MspanGir = (wuGir * Math.pow(L, 2) / 8.0) - (wuGir * Math.pow(cantGirder, 2) / 2.0);
         var McantGir = wuGir * Math.pow(cantGirder, 2) / 2.0;
@@ -2751,7 +2782,7 @@
         // -------------------------------------------------------------
         // 7. Code Check 5: Upright Pillar Slenderness & Stress (AISC 360-22)
         // -------------------------------------------------------------
-        var Lcol = hhigh;
+        var Lcol = hPostHigh; // governing (taller, north) post
         var KL = (mode === "braced") ? 1.0 * Math.max(Lcol - 2.5, 4.0) : 2.1 * Lcol;
         var slenderness = (KL * 12.0) / post.r;
         var slendernessOk = slenderness <= 300.0;
@@ -2879,7 +2910,8 @@
         barR.style.width = Math.min(dcRafter * 100, 100) + "%";
         barR.style.backgroundColor = rafPass ? (dcRafter > 0.85 ? "var(--global-warning-block)" : "var(--global-success-block)") : "var(--global-danger-block)";
         document.getElementById("desc-rafter").textContent =
-          rafter.name + " (" + rafter.wt + " plf). Mu: " + MuRaf.toFixed(1) + " k-ft vs Cap: " + phiMnRaf.toFixed(1) + " k-ft.";
+          rafter.name + " (" + rafter.wt + " plf). Mu: " + MuRaf.toFixed(1) + " k-ft vs Cap: " + phiMnRaf.toFixed(1) + " k-ft" +
+          (aOver > 0 ? " (" + (MsupRaf >= Math.abs(MmidRaf) ? "support" : "midspan") + " governs; " + B.toFixed(1) + " ft span + 2 x " + aOver.toFixed(2) + " ft overhang)." : ".");
 
         // Check Card 4: Girder
         var cardG = document.getElementById("card-girder");
@@ -2922,6 +2954,10 @@
         drawElevationSvg({
           W: W,
           L: L,
+          B: B,
+          aOver: aOver,
+          hPostLow: hPostLow,
+          hPostHigh: hPostHigh,
           pitch: pitch,
           hlow: hlow,
           hhigh: hhigh,
@@ -2951,20 +2987,28 @@
         var zoningY = groundY - 15.0 * ftScale;
 
         // Origin for posts
-        var lowPostX = 140;
-        var spanPx = Math.min(params.L * 14.0, 320);
+        // Horizontal scale: whole roof depth W fits in <= 360 px, centered
+        var hScale = Math.min(14.0, 360.0 / params.W);
+        var roofLeftX = 300 - params.W * hScale / 2;
+        var lowPostX = roofLeftX + params.aOver * hScale;
+        var spanPx = params.B * hScale;
         var highPostX = lowPostX + spanPx;
+        var roofRightX = highPostX + params.aOver * hScale;
 
         // Heights in pixels
         var lowHtPx = params.hlow * ftScale;
         var highHtPx = params.hhigh * ftScale;
 
-        var lowPostTopY = groundY - lowHtPx;
-        var highPostTopY = groundY - highHtPx;
+        var roofLowY = groundY - lowHtPx;   // low roof edge
+        var roofHighY = groundY - highHtPx; // high roof edge
+        var lowPostTopY = groundY - params.hPostLow * ftScale;
+        var highPostTopY = groundY - params.hPostHigh * ftScale;
 
         // Defs
         var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
         defs.innerHTML =
+          '<marker id="dimArrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">' +
+            '<path d="M 0 0 L 10 5 L 0 10 z" fill="var(--global-text-color-light)"/></marker>' +
           '<pattern id="soilPattern" width="12" height="12" patternUnits="userSpaceOnUse">' +
             '<path d="M 0 12 L 12 0 M 6 12 L 12 6 M 0 6 L 6 0" stroke="var(--global-divider-color)" stroke-width="1"/>' +
           '</pattern>';
@@ -3083,15 +3127,16 @@
         }
 
         // Girder Beam (with Cantilever Overhang)
-        var cantPx = params.cantGirder * 14.0;
-        var girderStartPx = lowPostX - cantPx;
-        var girderEndPx = highPostX + cantPx;
+        // This elevation looks along L, so the girder cantilever is out of plane. The framing line
+        // drawn here is the rafter/roof plane across W, including the rafter overhang past the posts.
+        var girderStartPx = roofLeftX;
+        var girderEndPx = roofRightX;
 
         var girder = document.createElementNS("http://www.w3.org/2000/svg", "line");
         girder.setAttribute("x1", girderStartPx);
-        girder.setAttribute("y1", lowPostTopY);
+        girder.setAttribute("y1", roofLowY);
         girder.setAttribute("x2", girderEndPx);
-        girder.setAttribute("y2", highPostTopY);
+        girder.setAttribute("y2", roofHighY);
         girder.setAttribute("stroke", "var(--global-theme-color)");
         girder.setAttribute("stroke-width", "7");
         svg.appendChild(girder);
@@ -3100,9 +3145,9 @@
         var modOverPx = params.modOverFt * 14.0;
         var pvStartPx = girderStartPx - modOverPx;
         var pvEndPx = girderEndPx + modOverPx;
-        var riseDelta = (highPostTopY - lowPostTopY) / (girderEndPx - girderStartPx);
-        var pvStartY = lowPostTopY - 6 - modOverPx * riseDelta;
-        var pvEndY = highPostTopY - 6 + modOverPx * riseDelta;
+        var riseDelta = (roofHighY - roofLowY) / (girderEndPx - girderStartPx);
+        var pvStartY = roofLowY - 6 - modOverPx * riseDelta;
+        var pvEndY = roofHighY - 6 + modOverPx * riseDelta;
 
         var pvModule = document.createElementNS("http://www.w3.org/2000/svg", "line");
         pvModule.setAttribute("x1", pvStartPx);
@@ -3146,7 +3191,7 @@
 
         // Height labels for low and high edges
         var lowLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        lowLabel.setAttribute("x", lowPostX);
+        lowLabel.setAttribute("x", Math.min(lowPostX, roofLeftX + 4) - 6);
         lowLabel.setAttribute("y", groundY - lowHtPx / 2);
         lowLabel.setAttribute("text-anchor", "end");
         lowLabel.setAttribute("font-family", "JetBrains Mono");
@@ -3154,6 +3199,30 @@
         lowLabel.setAttribute("fill", "var(--global-text-color-light)");
         lowLabel.textContent = params.hlow.toFixed(1) + " ft ";
         svg.appendChild(lowLabel);
+
+        // Post spacing B and rafter overhang dimensions (just above grade)
+        var dimY = groundY - 14;
+        var dimB = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        dimB.setAttribute("x1", lowPostX + colW); dimB.setAttribute("x2", highPostX - colW);
+        dimB.setAttribute("y1", dimY); dimB.setAttribute("y2", dimY);
+        dimB.setAttribute("stroke", "var(--global-text-color-light)"); dimB.setAttribute("stroke-width", "1.2");
+        dimB.setAttribute("marker-start", "url(#dimArrow)"); dimB.setAttribute("marker-end", "url(#dimArrow)");
+        svg.appendChild(dimB);
+        var dimBTx = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        dimBTx.setAttribute("x", (lowPostX + highPostX) / 2); dimBTx.setAttribute("y", dimY - 4);
+        dimBTx.setAttribute("text-anchor", "middle"); dimBTx.setAttribute("font-family", "JetBrains Mono");
+        dimBTx.setAttribute("font-size", "9"); dimBTx.setAttribute("fill", "var(--global-text-color-light)");
+        dimBTx.textContent = "B = " + params.B.toFixed(1) + " ft";
+        svg.appendChild(dimBTx);
+        if (params.aOver > 0) {
+          var aTx = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          aTx.setAttribute("x", lowPostX - colW / 2 - 4); aTx.setAttribute("y", roofLowY + 18);
+          aTx.setAttribute("text-anchor", "end");
+          aTx.setAttribute("font-family", "JetBrains Mono"); aTx.setAttribute("font-size", "9");
+          aTx.setAttribute("fill", "var(--global-theme-color)");
+          aTx.textContent = params.aOver.toFixed(2) + " ft overhang";
+          svg.appendChild(aTx);
+        }
 
         if (params.pitch > 0) {
           var pitchLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -3182,12 +3251,12 @@
 
       // Preset Buttons Handlers
       var presets = {
-        "preset-std16": {W:16, L:20, pitch:7, hlow:8.0, post:"HSS4x4x3/16", girder:"W10x12", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
-        "preset-std12": {W:12, L:16, pitch:10, hlow:8.0, post:"HSS4x4x3/16", girder:"W6x9", rafter:"S4x7.7", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
-        "preset-std24": {W:20, L:24, pitch:7, hlow:8.0, post:"HSS4x4x3/16", girder:"W10x19", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
-        "preset-flat":  {W:16, L:20, pitch:0, hlow:8.5, post:"HSS4x4x3/16", girder:"W10x12", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
-        "preset-cant":  {W:16, L:20, pitch:7, hlow:8.0, post:"HSS4x4x1/4", girder:"W10x15", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:3.0, modOver:12, elev:"5500"},
-        "preset-fail":  {W:20, L:24, pitch:25, hlow:9.0, post:"S4x7.7", girder:"W8x13", rafter:"S4x7.7", sRaf:"3.0", mode:"cant", cant:0, modOver:24, elev:"5500"}
+        "preset-std16": {W:16, B:16, L:20, pitch:7, hlow:8.0, post:"HSS4x4x3/16", girder:"W10x12", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
+        "preset-std12": {W:12, B:12, L:16, pitch:10, hlow:8.0, post:"HSS4x4x3/16", girder:"W6x9", rafter:"S4x7.7", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
+        "preset-std24": {W:20, B:20, L:24, pitch:7, hlow:8.0, post:"HSS4x4x3/16", girder:"W10x19", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
+        "preset-flat":  {W:16, B:16, L:20, pitch:0, hlow:8.5, post:"HSS4x4x3/16", girder:"W10x12", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:0, modOver:6, elev:"5500"},
+        "preset-cant":  {W:16, B:16, L:20, pitch:7, hlow:8.0, post:"HSS4x4x1/4", girder:"W10x15", rafter:"W6x9", sRaf:"3.0", mode:"braced", cant:3.0, modOver:12, elev:"5500"},
+        "preset-fail":  {W:20, B:20, L:24, pitch:25, hlow:9.0, post:"S4x7.7", girder:"W8x13", rafter:"S4x7.7", sRaf:"3.0", mode:"cant", cant:0, modOver:24, elev:"5500"}
       };
 
       Object.keys(presets).forEach(function (id) {
@@ -3199,6 +3268,8 @@
           var p = presets[id];
           document.getElementById("calc-depth").value = p.W;
           document.getElementById("calc-span").value = p.L;
+          document.getElementById("calc-postw").max = p.W;
+          document.getElementById("calc-postw").value = p.B;
           document.getElementById("calc-pitch").value = p.pitch;
           document.getElementById("calc-hlow").value = p.hlow;
           document.getElementById("calc-post-shape").value = p.post;
@@ -3215,7 +3286,7 @@
 
       // Bind all inputs
       [
-        "calc-depth", "calc-span", "calc-pitch", "calc-hlow",
+        "calc-depth", "calc-span", "calc-postw", "calc-pitch", "calc-hlow",
         "calc-post-shape", "calc-girder-shape", "calc-rafter-shape",
         "calc-raf-spacing", "calc-mode", "calc-cant-girder",
         "calc-mod-overhang", "calc-elev"
